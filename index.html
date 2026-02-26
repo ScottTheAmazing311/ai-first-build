@@ -765,6 +765,66 @@
       color: #E8DFD3; line-height: 1.8; margin: 0; white-space: pre-wrap;
     }
 
+    /* ---- Claude Code Session Display ---- */
+    .cc-session-wrapper {
+      background: #0f0f14; border-radius: 12px; overflow: hidden;
+      flex: 1; display: flex; flex-direction: column;
+      min-height: 340px; border: 1px solid #252530;
+    }
+    .cc-toolbar {
+      background: #1a1a24; padding: 10px 16px;
+      display: flex; align-items: center; gap: 10px;
+      border-bottom: 1px solid #252530; flex-shrink: 0;
+    }
+    .cc-dots { display: flex; gap: 6px; }
+    .cc-dots span { width: 11px; height: 11px; border-radius: 50%; }
+    .cc-dots span:nth-child(1) { background: #ff5f56; }
+    .cc-dots span:nth-child(2) { background: #ffbd2e; }
+    .cc-dots span:nth-child(3) { background: #27c93f; }
+    .cc-title { color: #3a3a55; font-size: 12px; font-family: var(--mono); }
+    .cc-body {
+      flex: 1; overflow-y: auto; padding: 16px;
+      display: flex; flex-direction: column; gap: 14px;
+    }
+    .cc-body::-webkit-scrollbar { width: 4px; }
+    .cc-body::-webkit-scrollbar-thumb { background: #252530; border-radius: 2px; }
+    .cc-user-row { display: flex; gap: 8px; align-items: flex-start; }
+    .cc-chevron { color: #e86f2a; font-family: var(--mono); font-size: 14px; font-weight: 700; flex-shrink: 0; line-height: 1.5; }
+    .cc-user-text { color: #e0e0f0; font-family: var(--mono); font-size: 12.5px; line-height: 1.6; }
+    .cc-tool-block { background: #161620; border-radius: 6px; border-left: 2px solid #27c93f; overflow: hidden; }
+    .cc-tool-header { display: flex; align-items: center; gap: 6px; padding: 7px 12px; border-bottom: 1px solid #222230; }
+    .cc-tool-verb { color: #27c93f; font-family: var(--mono); font-size: 11.5px; font-weight: 600; }
+    .cc-tool-file { color: #6fa8dc; font-family: var(--mono); font-size: 11.5px; }
+    .cc-diff-area { padding: 6px 0; }
+    .cc-diff-row { display: flex; align-items: baseline; gap: 6px; font-family: var(--mono); font-size: 11.5px; padding: 1px 12px; line-height: 1.7; }
+    .cc-diff-row.add { background: rgba(39,201,63,0.06); }
+    .cc-sign { flex-shrink: 0; width: 8px; }
+    .cc-diff-row.add .cc-sign { color: #27c93f; }
+    .cc-diff-row.skip .cc-sign { color: #2a2a3a; }
+    .cc-code { color: #c0c0dc; flex: 1; }
+    .cc-kw { color: #c586c0; } .cc-str { color: #ce9178; } .cc-fn { color: #dcdcaa; }
+    .cc-var { color: #9cdcfe; } .cc-num { color: #b5cea8; } .cc-cm { color: #6a9955; }
+    .cc-editable-prompt {
+      background: rgba(232,111,42,0.18); border: 1px solid rgba(232,111,42,0.45);
+      border-radius: 3px; padding: 0 5px; cursor: pointer; color: #f0a870;
+    }
+    .cc-editable-prompt:hover { background: rgba(232,111,42,0.32); }
+    .cc-response { color: #60607a; font-family: var(--mono); font-size: 11.5px; line-height: 1.7; padding-left: 2px; }
+    .cc-done-row { display: flex; align-items: center; gap: 6px; color: #27c93f; font-family: var(--mono); font-size: 11.5px; font-weight: 600; }
+
+    /* Freeform live app */
+    .freeform-app { background: var(--bg); display: flex; flex-direction: column; height: 380px; }
+
+    /* CLI tools in launch */
+    .cli-grid { display: flex; flex-direction: column; gap: 8px; }
+    .cli-item { background: #0f0f14; border-radius: 8px; padding: 11px 14px; border: 1px solid #252530; }
+    .cli-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.07em; color: #3a3a55; margin-bottom: 5px; font-weight: 600; font-family: var(--mono); }
+    .cli-cmd-row { display: flex; align-items: center; gap: 8px; }
+    .cli-cmd { flex: 1; font-family: var(--mono); font-size: 12.5px; color: #27c93f; }
+    .cli-copy { background: none; border: 1px solid #252530; border-radius: 4px; color: #3a3a55; font-size: 10px; padding: 3px 8px; cursor: pointer; font-family: var(--mono); transition: all 0.15s; flex-shrink: 0; }
+    .cli-copy:hover { border-color: #27c93f; color: #27c93f; }
+    .cli-copy.copied { border-color: #27c93f; color: #27c93f; background: rgba(39,201,63,0.1); }
+
     /* ---- Responsive ---- */
     @media (max-width: 768px) {
       .build-content { flex-direction: column; }
@@ -953,6 +1013,13 @@
             <p>Describe your dream trip and get a day-by-day itinerary with local tips.</p>
             <span class="project-tag tag-medium">Intermediate</span>
           </div>
+          <div class="project-option" onclick="selectProject('freeform')" data-project="freeform">
+            <div class="project-selected-badge">&#10003;</div>
+            <span class="emoji">&#128161;</span>
+            <h3>Your Own Idea</h3>
+            <p>Already have something in mind? Describe it and see exactly how Claude Code brings it to life.</p>
+            <span class="project-tag tag-medium">Your Idea</span>
+          </div>
         </div>
         <div class="btn-row">
           <button class="btn btn-ghost" onclick="goToStep(1)">&larr; Back</button>
@@ -989,13 +1056,7 @@
             </button>
           </div>
           <div class="build-editor">
-            <div class="editor-wrapper">
-              <div class="editor-toolbar">
-                <div class="editor-dots"><span></span><span></span><span></span></div>
-                <div class="editor-filename" id="build1-filename">journal.py</div>
-              </div>
-              <div class="editor-body" id="build1-code"></div>
-            </div>
+            <div id="build1-cc"></div>
           </div>
         </div>
       </div>
@@ -1026,13 +1087,7 @@
             </button>
           </div>
           <div class="build-editor">
-            <div class="editor-wrapper">
-              <div class="editor-toolbar">
-                <div class="editor-dots"><span></span><span></span><span></span></div>
-                <div class="editor-filename" id="build2-filename">journal.py</div>
-              </div>
-              <div class="editor-body" id="build2-code"></div>
-            </div>
+            <div id="build2-cc"></div>
           </div>
         </div>
       </div>
@@ -1066,14 +1121,6 @@
             </div>
           </div>
           <div class="build-editor">
-            <div class="editor-wrapper">
-              <div class="editor-toolbar">
-                <div class="editor-dots"><span></span><span></span><span></span></div>
-                <div class="editor-filename" id="build3-filename">journal.py</div>
-              </div>
-              <div class="editor-body" id="build3-code"></div>
-            </div>
-            <!-- Live app panel -->
             <div class="live-app-wrapper" id="live-app-container">
               <div class="live-app-bar">
                 <div class="live-app-bar-left">
@@ -1128,16 +1175,39 @@
 
         <div class="launch-bottom">
           <div class="launch-code-section">
-            <h3>Your code</h3>
-            <div class="launch-actions">
-              <button class="btn btn-primary" onclick="showFullCode()">
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M5 6l2 2-2 2M9 10h2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                View full code
-              </button>
-              <button class="btn btn-secondary" onclick="copyCode()">
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="5" y="5" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.5"/><path d="M3 11V3h8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-                Copy to clipboard
-              </button>
+            <h3>&#128640; Run it on your machine</h3>
+            <p style="font-size:13px;color:var(--text-secondary);margin-bottom:14px;">Install these once — then build anything.</p>
+            <div class="cli-grid">
+              <div class="cli-item">
+                <div class="cli-label">Claude Code</div>
+                <div class="cli-cmd-row">
+                  <span class="cli-cmd">npm install -g @anthropic-ai/claude-code</span>
+                  <button class="cli-copy" onclick="copyCli(this,'npm install -g @anthropic-ai/claude-code')">copy</button>
+                </div>
+              </div>
+              <div class="cli-item">
+                <div class="cli-label">Vercel CLI</div>
+                <div class="cli-cmd-row">
+                  <span class="cli-cmd">npm install -g vercel</span>
+                  <button class="cli-copy" onclick="copyCli(this,'npm install -g vercel')">copy</button>
+                </div>
+              </div>
+              <div class="cli-item">
+                <div class="cli-label">Supabase CLI</div>
+                <div class="cli-cmd-row">
+                  <span class="cli-cmd">brew install supabase/tap/supabase</span>
+                  <button class="cli-copy" onclick="copyCli(this,'brew install supabase/tap/supabase')">copy</button>
+                </div>
+              </div>
+              <div class="cli-item">
+                <div class="cli-label">API Key</div>
+                <div class="cli-cmd-row">
+                  <span class="cli-cmd">export ANTHROPIC_API_KEY=sk-ant-...</span>
+                  <button class="cli-copy" onclick="copyCli(this,'export ANTHROPIC_API_KEY=sk-ant-...')">copy</button>
+                </div>
+              </div>
+            </div>
+            <div style="margin-top:14px;">
               <button class="btn btn-ghost" onclick="goToStep(2)">Build another project &rarr;</button>
             </div>
           </div>
@@ -1145,24 +1215,24 @@
             <h3>What's next?</h3>
             <div class="whats-next-items">
               <div class="whats-next-item">
-                <div class="whats-next-icon">&#128187;</div>
-                <div class="whats-next-text">
-                  <h4>Run it on your own machine</h4>
-                  <p>Copy the Python code, install the Anthropic library, add your API key. Five minutes to local.</p>
-                </div>
-              </div>
-              <div class="whats-next-item">
                 <div class="whats-next-icon">&#9889;</div>
                 <div class="whats-next-text">
-                  <h4>Try Claude Code</h4>
-                  <p>Claude Code is an AI coding assistant that helps you build bigger projects — just describe what you want.</p>
+                  <h4>Open Claude Code</h4>
+                  <p>Run <code style="font-family:var(--mono);font-size:12px;background:var(--surface-alt);padding:1px 5px;border-radius:3px;">claude</code> in any folder and describe what you want to build. It writes the code for you.</p>
                 </div>
               </div>
               <div class="whats-next-item">
-                <div class="whats-next-icon">&#127759;</div>
+                <div class="whats-next-icon">&#127760;</div>
                 <div class="whats-next-text">
-                  <h4>Build your own idea</h4>
-                  <p>You know the three pieces now: Prompt, API, Function. What would you build for yourself?</p>
+                  <h4>Deploy with Vercel</h4>
+                  <p>Run <code style="font-family:var(--mono);font-size:12px;background:var(--surface-alt);padding:1px 5px;border-radius:3px;">vercel</code> in your project folder. Your app is live in 30 seconds.</p>
+                </div>
+              </div>
+              <div class="whats-next-item">
+                <div class="whats-next-icon">&#128451;</div>
+                <div class="whats-next-text">
+                  <h4>Add a database with Supabase</h4>
+                  <p>Postgres, auth, and file storage — set up with one CLI command and Claude Code handles the rest.</p>
                 </div>
               </div>
             </div>
@@ -1221,13 +1291,14 @@
         build1: {
           desc: 'Every project starts by importing the tools it needs and setting up the connection to Claude\'s AI.',
           tip: 'The first two lines are like plugging in your appliances before cooking. We\'re connecting to the Claude API so our code can talk to AI.',
-          code: [
-            { n: 1, c: '<span class="comment"># AI Journal Buddy — your personal reflection partner</span>' },
-            { n: 2, c: '' },
-            { n: 3, c: '<span class="keyword">import</span> anthropic' },
-            { n: 4, c: '' },
-            { n: 5, c: '<span class="comment"># Connect to Claude</span>' },
-            { n: 6, c: '<span class="var">client</span> = anthropic.<span class="fn">Anthropic</span>()' },
+          ccSession: [
+            { type: 'user', text: 'create journal.js and connect it to the Claude API' },
+            { type: 'tool', verb: '✎ Creating', file: 'journal.js', diffs: [
+              { add: true, code: '<span class="cc-cm">// AI Journal Buddy</span>' },
+              { add: true, code: '<span class="cc-kw">import</span> Anthropic <span class="cc-kw">from</span> <span class="cc-str">"@anthropic-ai/sdk"</span>;' },
+              { add: true, code: '<span class="cc-kw">const</span> <span class="cc-var">client</span> = <span class="cc-kw">new</span> <span class="cc-fn">Anthropic</span>();' },
+            ]},
+            { type: 'done', text: 'journal.js created — Claude API connected.' }
           ]
         },
         build2: {
@@ -1235,21 +1306,17 @@
           desc: 'This function takes your journal entry, sends it to Claude with a thoughtful prompt, and returns a warm reflection.',
           tip: 'See the highlighted line? That\'s the prompt — the personality of your AI buddy. Click it to customize what kind of reflections you get.',
           defaultPrompt: 'You are a warm, thoughtful journal companion. Read this entry and offer a gentle reflection — notice patterns, ask one follow-up question, and end with encouragement.',
-          code: function(prompt) {
+          ccSession: function(prompt) {
             const p = prompt || this.defaultPrompt;
+            const pShort = p.length > 48 ? p.substring(0, 48) + '\u2026' : p;
             return [
-              { n: 8, c: '<span class="keyword">def</span> <span class="fn">reflect</span>(entry):' },
-              { n: 9, c: '    <span class="comment"># Send your entry to Claude with a prompt</span>' },
-              { n: 10, c: '    response = client.messages.<span class="fn">create</span>(' },
-              { n: 11, c: '        model=<span class="string">"claude-sonnet-4-20250514"</span>,' },
-              { n: 12, c: '        max_tokens=<span class="keyword">1024</span>,' },
-              { n: 13, c: '        messages=[{' },
-              { n: 14, c: '            <span class="string">"role"</span>: <span class="string">"user"</span>,' },
-              { n: 15, c: '            <span class="string">"content"</span>: entry' },
-              { n: 16, c: '        }],' },
-              { n: 17, c: '        system=<span class="string">"' + escapeHtml(p) + '"</span>', editable: true, editPrompt: p },
-              { n: 18, c: '    )' },
-              { n: 19, c: '    <span class="keyword">return</span> response.content[<span class="keyword">0</span>].text' },
+              { type: 'user', text: 'add a reflect() function that sends entries to Claude' },
+              { type: 'tool', verb: '✎ Editing', file: 'journal.js', diffs: [
+                { add: true, code: '<span class="cc-kw">async function</span> <span class="cc-fn">reflect</span>(<span class="cc-var">entry</span>) {' },
+                { add: true, code: '  system: <span class="cc-str">"<span class="cc-editable-prompt" onclick="openEditPrompt(\'' + escapeAttr(p) + '\')">' + escapeHtml(pShort) + '</span>"</span>,' },
+                { add: true, code: '}' },
+              ]},
+              { type: 'done', text: 'reflect() added — click the orange prompt to customize it.' }
             ];
           }
         },
@@ -1283,13 +1350,14 @@
         build1: {
           desc: 'We start by connecting to the Claude API — the bridge between your code and AI.',
           tip: 'Just like before: import the tools, create the connection. Every AI project starts this same way.',
-          code: [
-            { n: 1, c: '<span class="comment"># Text Summarizer — paste anything, get bullet points</span>' },
-            { n: 2, c: '' },
-            { n: 3, c: '<span class="keyword">import</span> anthropic' },
-            { n: 4, c: '' },
-            { n: 5, c: '<span class="comment"># Connect to Claude</span>' },
-            { n: 6, c: '<span class="var">client</span> = anthropic.<span class="fn">Anthropic</span>()' },
+          ccSession: [
+            { type: 'user', text: 'create summarizer.js and connect it to the Claude API' },
+            { type: 'tool', verb: '✎ Creating', file: 'summarizer.js', diffs: [
+              { add: true, code: '<span class="cc-cm">// Text Summarizer</span>' },
+              { add: true, code: '<span class="cc-kw">import</span> Anthropic <span class="cc-kw">from</span> <span class="cc-str">"@anthropic-ai/sdk"</span>;' },
+              { add: true, code: '<span class="cc-kw">const</span> <span class="cc-var">client</span> = <span class="cc-kw">new</span> <span class="cc-fn">Anthropic</span>();' },
+            ]},
+            { type: 'done', text: 'summarizer.js created — Claude API connected.' }
           ]
         },
         build2: {
@@ -1297,21 +1365,17 @@
           desc: 'This function takes any text and asks Claude to distill it into clean, scannable bullet points.',
           tip: 'The highlighted prompt controls the output format. Want numbered points instead? A one-sentence summary? Click to change it.',
           defaultPrompt: 'Summarize the following text into 3-5 concise bullet points. Focus on key facts and takeaways. Be clear and specific.',
-          code: function(prompt) {
+          ccSession: function(prompt) {
             const p = prompt || this.defaultPrompt;
+            const pShort = p.length > 48 ? p.substring(0, 48) + '\u2026' : p;
             return [
-              { n: 8, c: '<span class="keyword">def</span> <span class="fn">summarize</span>(text):' },
-              { n: 9, c: '    <span class="comment"># Ask Claude to summarize</span>' },
-              { n: 10, c: '    response = client.messages.<span class="fn">create</span>(' },
-              { n: 11, c: '        model=<span class="string">"claude-sonnet-4-20250514"</span>,' },
-              { n: 12, c: '        max_tokens=<span class="keyword">1024</span>,' },
-              { n: 13, c: '        messages=[{' },
-              { n: 14, c: '            <span class="string">"role"</span>: <span class="string">"user"</span>,' },
-              { n: 15, c: '            <span class="string">"content"</span>: text' },
-              { n: 16, c: '        }],' },
-              { n: 17, c: '        system=<span class="string">"' + escapeHtml(p) + '"</span>', editable: true, editPrompt: p },
-              { n: 18, c: '    )' },
-              { n: 19, c: '    <span class="keyword">return</span> response.content[<span class="keyword">0</span>].text' },
+              { type: 'user', text: 'add a summarize() function that returns bullet points' },
+              { type: 'tool', verb: '✎ Editing', file: 'summarizer.js', diffs: [
+                { add: true, code: '<span class="cc-kw">async function</span> <span class="cc-fn">summarize</span>(<span class="cc-var">text</span>) {' },
+                { add: true, code: '  system: <span class="cc-str">"<span class="cc-editable-prompt" onclick="openEditPrompt(\'' + escapeAttr(p) + '\')">' + escapeHtml(pShort) + '</span>"</span>,' },
+                { add: true, code: '}' },
+              ]},
+              { type: 'done', text: 'summarize() added — click the orange prompt to customize it.' }
             ];
           }
         },
@@ -1345,13 +1409,14 @@
         build1: {
           desc: 'Same start as before — connect to Claude. This time we\'ll also set up a system prompt that gives Claude a travel-expert personality.',
           tip: 'We\'re giving Claude a "role" right from the start. Think of it like briefing a travel agent before they plan your trip.',
-          code: [
-            { n: 1, c: '<span class="comment"># Travel Planner — describe your dream trip, get an itinerary</span>' },
-            { n: 2, c: '' },
-            { n: 3, c: '<span class="keyword">import</span> anthropic' },
-            { n: 4, c: '' },
-            { n: 5, c: '<span class="comment"># Connect to Claude</span>' },
-            { n: 6, c: '<span class="var">client</span> = anthropic.<span class="fn">Anthropic</span>()' },
+          ccSession: [
+            { type: 'user', text: 'create travel.js and connect it to the Claude API' },
+            { type: 'tool', verb: '✎ Creating', file: 'travel.js', diffs: [
+              { add: true, code: '<span class="cc-cm">// Travel Planner</span>' },
+              { add: true, code: '<span class="cc-kw">import</span> Anthropic <span class="cc-kw">from</span> <span class="cc-str">"@anthropic-ai/sdk"</span>;' },
+              { add: true, code: '<span class="cc-kw">const</span> <span class="cc-var">client</span> = <span class="cc-kw">new</span> <span class="cc-fn">Anthropic</span>();' },
+            ]},
+            { type: 'done', text: 'travel.js created — Claude API connected.' }
           ]
         },
         build2: {
@@ -1359,21 +1424,17 @@
           desc: 'This function takes a trip description and returns a detailed day-by-day itinerary with local recommendations.',
           tip: 'The highlighted prompt shapes the entire trip plan. Want budget tips? Food-focused? Adventure-heavy? Click to customize the travel style.',
           defaultPrompt: 'You are an experienced travel planner. Create a detailed day-by-day itinerary based on the user\'s description. Include specific restaurant and activity recommendations, local tips, and estimated costs. Keep it practical and exciting.',
-          code: function(prompt) {
+          ccSession: function(prompt) {
             const p = prompt || this.defaultPrompt;
+            const pShort = p.length > 48 ? p.substring(0, 48) + '\u2026' : p;
             return [
-              { n: 8, c: '<span class="keyword">def</span> <span class="fn">plan_trip</span>(description):' },
-              { n: 9, c: '    <span class="comment"># Ask Claude to plan the trip</span>' },
-              { n: 10, c: '    response = client.messages.<span class="fn">create</span>(' },
-              { n: 11, c: '        model=<span class="string">"claude-sonnet-4-20250514"</span>,' },
-              { n: 12, c: '        max_tokens=<span class="keyword">2048</span>,' },
-              { n: 13, c: '        messages=[{' },
-              { n: 14, c: '            <span class="string">"role"</span>: <span class="string">"user"</span>,' },
-              { n: 15, c: '            <span class="string">"content"</span>: description' },
-              { n: 16, c: '        }],' },
-              { n: 17, c: '        system=<span class="string">"' + escapeHtml(p) + '"</span>', editable: true, editPrompt: p },
-              { n: 18, c: '    )' },
-              { n: 19, c: '    <span class="keyword">return</span> response.content[<span class="keyword">0</span>].text' },
+              { type: 'user', text: 'add a planTrip() function that builds day-by-day itineraries' },
+              { type: 'tool', verb: '✎ Editing', file: 'travel.js', diffs: [
+                { add: true, code: '<span class="cc-kw">async function</span> <span class="cc-fn">planTrip</span>(<span class="cc-var">description</span>) {' },
+                { add: true, code: '  system: <span class="cc-str">"<span class="cc-editable-prompt" onclick="openEditPrompt(\'' + escapeAttr(p) + '\')">' + escapeHtml(pShort) + '</span>"</span>,' },
+                { add: true, code: '}' },
+              ]},
+              { type: 'done', text: 'planTrip() added — click the orange prompt to customize it.' }
             ];
           }
         },
@@ -1396,6 +1457,54 @@
         fullCode: function(prompt) {
           const p = prompt || this.build2.defaultPrompt;
           return `# Travel Planner — describe your dream trip, get an itinerary\n\nimport anthropic\n\n# Connect to Claude\nclient = anthropic.Anthropic()\n\n\ndef plan_trip(description):\n    # Ask Claude to plan the trip\n    response = client.messages.create(\n        model="claude-sonnet-4-20250514",\n        max_tokens=2048,\n        messages=[{\n            "role": "user",\n            "content": description\n        }],\n        system="${p}"\n    )\n    return response.content[0].text\n\n\n# Let the user plan trips\nprint("✈️ Travel Planner ready! Describe your dream trip:")\nprint("(Include destination, dates, budget, and what you enjoy)\\n")\n\nwhile True:\n    trip = input("🌍 Your trip: ")\n    if trip.lower() == "quit":\n        print("Bon voyage! 🧳")\n        break\n    itinerary = plan_trip(trip)\n    print(f"\\n📅 Your Itinerary:\\n{itinerary}\\n")`;
+        }
+      },
+      freeform: {
+        name: 'Your AI App',
+        filename: 'app.js',
+        lines: 20,
+        liveLabel: 'Your AI App — try it out',
+        launchEmoji: '💡',
+        liveSystemPrompt: 'You are a helpful AI assistant. Be friendly, concise, and helpful.',
+        build1: {
+          desc: 'Every Claude Code project starts the same way — connect to the API and you\'re ready to build anything.',
+          tip: 'These three lines are the foundation of every AI app. Once the client is connected, Claude is at your disposal.',
+          ccSession: [
+            { type: 'user', text: 'create app.js with a Claude API connection' },
+            { type: 'tool', verb: '✎ Creating', file: 'app.js', diffs: [
+              { add: true, code: '<span class="cc-cm">// Your AI App</span>' },
+              { add: true, code: '<span class="cc-kw">import</span> Anthropic <span class="cc-kw">from</span> <span class="cc-str">"@anthropic-ai/sdk"</span>;' },
+              { add: true, code: '<span class="cc-kw">const</span> <span class="cc-var">client</span> = <span class="cc-kw">new</span> <span class="cc-fn">Anthropic</span>();' },
+            ]},
+            { type: 'done', text: 'app.js created — Claude API ready.' }
+          ]
+        },
+        build2: {
+          title: 'Your AI logic',
+          desc: 'The core function that sends user input to Claude and returns a response. This is the engine of your app.',
+          tip: 'The highlighted prompt is the personality of your app. Make it specific — the more focused the prompt, the smarter the app feels.',
+          defaultPrompt: 'You are a helpful AI assistant. Be friendly, concise, and helpful.',
+          ccSession: function(prompt) {
+            const p = prompt || this.defaultPrompt;
+            const pShort = p.length > 48 ? p.substring(0, 48) + '\u2026' : p;
+            return [
+              { type: 'user', text: 'add a chat() function that calls Claude with my system prompt' },
+              { type: 'tool', verb: '✎ Editing', file: 'app.js', diffs: [
+                { add: true, code: '<span class="cc-kw">async function</span> <span class="cc-fn">chat</span>(<span class="cc-var">input</span>) {' },
+                { add: true, code: '  system: <span class="cc-str">"<span class="cc-editable-prompt" onclick="openEditPrompt(\'' + escapeAttr(p) + '\')">' + escapeHtml(pShort) + '</span>"</span>,' },
+                { add: true, code: '}' },
+              ]},
+              { type: 'done', text: 'chat() added — click the orange prompt to make it yours.' }
+            ];
+          }
+        },
+        build3: {
+          desc: 'Your app is ready. Type a message below and see your AI respond in real time — shaped by the system prompt you chose.',
+          tip: 'This is your own AI running live. Change the system prompt in the previous step to give it any personality or focus you want.'
+        },
+        fullCode: function(prompt) {
+          const p = prompt || this.build2.defaultPrompt;
+          return `// Your AI App\nimport Anthropic from "@anthropic-ai/sdk";\n\nconst client = new Anthropic();\n\nasync function chat(input) {\n  const response = await client.messages.create({\n    model: "claude-sonnet-4-20250514",\n    max_tokens: 1024,\n    system: "${p}",\n    messages: [{ role: "user", content: input }]\n  });\n  return response.content[0].text;\n}\n\n// Example usage\nconst answer = await chat("Hello!");\nconsole.log(answer);`;
         }
       }
     };
@@ -1461,24 +1570,48 @@
       }).join('');
     }
 
+    function renderCCSession(containerId, items) {
+      const container = document.getElementById(containerId);
+      if (!container) return;
+      let html = `<div class="cc-session-wrapper">
+        <div class="cc-toolbar">
+          <div class="cc-dots"><span></span><span></span><span></span></div>
+          <span class="cc-title">Claude Code</span>
+        </div>
+        <div class="cc-body">`;
+      for (const item of items) {
+        if (item.type === 'user') {
+          html += `<div class="cc-user-row"><span class="cc-chevron">&gt;</span><span class="cc-user-text">${escapeHtml(item.text)}</span></div>`;
+        } else if (item.type === 'tool') {
+          html += `<div class="cc-tool-block"><div class="cc-tool-header"><span class="cc-tool-verb">${escapeHtml(item.verb)}</span><span class="cc-tool-file">${escapeHtml(item.file)}</span></div><div class="cc-diff-area">`;
+          for (const diff of item.diffs) {
+            const rowClass = diff.add ? 'add' : '';
+            const sign = diff.add ? '+' : '&nbsp;';
+            html += `<div class="cc-diff-row ${rowClass}"><span class="cc-sign">${sign}</span><span class="cc-code">${diff.code}</span></div>`;
+          }
+          html += `</div></div>`;
+        } else if (item.type === 'done') {
+          html += `<div class="cc-done-row">&#10003; ${escapeHtml(item.text)}</div>`;
+        }
+      }
+      html += `</div></div>`;
+      container.innerHTML = html;
+    }
+
     function populateBuildStep(step) {
       const proj = projects[selectedProject];
       if (step === 3) {
         document.getElementById('build1-desc').textContent = proj.build1.desc;
         document.getElementById('build1-tip').textContent = proj.build1.tip;
-        document.getElementById('build1-filename').textContent = proj.filename;
-        document.getElementById('build1-code').innerHTML = renderLines(proj.build1.code);
+        renderCCSession('build1-cc', proj.build1.ccSession);
       } else if (step === 4) {
         document.getElementById('build2-title').textContent = proj.build2.title;
         document.getElementById('build2-desc').textContent = proj.build2.desc;
         document.getElementById('build2-tip').textContent = proj.build2.tip;
-        document.getElementById('build2-filename').textContent = proj.filename;
-        document.getElementById('build2-code').innerHTML = renderLines(proj.build2.code(customPrompt));
+        renderCCSession('build2-cc', proj.build2.ccSession(customPrompt));
       } else if (step === 5) {
         document.getElementById('build3-desc').textContent = proj.build3.desc;
         document.getElementById('build3-tip').textContent = proj.build3.tip;
-        document.getElementById('build3-filename').textContent = proj.filename;
-        document.getElementById('build3-code').innerHTML = renderLines(proj.build3.code);
         document.getElementById('live-app-label').textContent = proj.liveLabel;
         renderLiveApp('live-app-ui', selectedProject);
       }
@@ -1507,6 +1640,7 @@
     // ---- LIVE APP RENDERING ----
     function getSystemPrompt() {
       const proj = projects[selectedProject];
+      if (proj.liveSystemPrompt && !customPrompt) return proj.liveSystemPrompt;
       return customPrompt || proj.build2.defaultPrompt;
     }
 
@@ -1553,6 +1687,19 @@
             </div>
             <div class="travel-output" id="${containerId}-output">
               <div class="travel-placeholder">✈️ Describe your dream trip above — destination, dates, budget, vibe</div>
+            </div>
+          </div>`;
+      } else if (projectId === 'freeform') {
+        container.innerHTML = `
+          <div class="journal-app freeform-app">
+            <div class="journal-messages" id="${containerId}-messages">
+              <div class="msg"><div class="msg-ai">💡 Your AI app is live! Type a message and see how it responds — shaped by the system prompt you set.</div></div>
+            </div>
+            <div class="journal-input-row">
+              <textarea id="${containerId}-input" placeholder="Type a message to your AI app..." rows="2" onkeydown="handleJournalKey(event, '${containerId}')"></textarea>
+              <button class="send-btn" id="${containerId}-send" onclick="sendJournal('${containerId}')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+              </button>
             </div>
           </div>`;
       }
@@ -1857,6 +2004,18 @@
     }
     function escapeAttr(str) {
       return String(str).replace(/'/g, "\\'").replace(/"/g, '\\"');
+    }
+
+    function copyCli(btn, text) {
+      navigator.clipboard.writeText(text).then(() => {
+        const orig = btn.textContent;
+        btn.textContent = '✓';
+        btn.style.color = 'var(--success, #4ade80)';
+        setTimeout(() => { btn.textContent = orig; btn.style.color = ''; }, 2000);
+      }).catch(() => {
+        btn.textContent = '!';
+        setTimeout(() => { btn.textContent = 'copy'; }, 2000);
+      });
     }
 
     // ---- KEYBOARD ----
