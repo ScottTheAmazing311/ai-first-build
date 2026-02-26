@@ -157,6 +157,7 @@
       background: var(--accent); color: #fff;
     }
     .btn-primary:hover { background: var(--accent-dark); transform: translateY(-1px); box-shadow: var(--shadow-md); }
+    .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
     .btn-secondary {
       background: var(--surface); color: var(--text);
       border: 1px solid var(--border-strong);
@@ -441,53 +442,229 @@
     .tooltip-card p {
       font-size: 14px; color: var(--text-secondary); margin-bottom: 20px;
     }
-    .tooltip-card input {
+    .tooltip-card textarea {
       width: 100%;
       padding: 12px 16px;
       border: 2px solid var(--border);
       border-radius: var(--radius-sm);
       font-family: var(--mono);
-      font-size: 14px;
+      font-size: 13px;
       background: var(--surface-alt);
       color: var(--text);
       margin-bottom: 16px;
       transition: border-color 0.2s;
+      resize: vertical;
+      min-height: 80px;
+      line-height: 1.6;
     }
-    .tooltip-card input:focus { outline: none; border-color: var(--accent); }
+    .tooltip-card textarea:focus { outline: none; border-color: var(--accent); }
     .tooltip-actions { display: flex; gap: 10px; justify-content: flex-end; }
 
-    /* ---- Preview (Step 6) ---- */
-    .preview-page {
-      flex: 1; padding: 48px 24px;
-      max-width: 800px; margin: 0 auto; width: 100%;
-    }
-    .preview-page h2 { font-size: 28px; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 6px; }
-    .preview-page > p { color: var(--text-secondary); font-size: 15px; margin-bottom: 32px; }
-    .preview-full-code {
-      background: #1E1A14; border-radius: var(--radius);
-      overflow: hidden; margin-bottom: 32px;
+    /* ---- Live App Panel (Step 5) ---- */
+    .live-app-wrapper {
+      margin-top: 20px;
+      border-radius: var(--radius);
+      overflow: hidden;
       box-shadow: var(--shadow-lg);
+      border: 1px solid var(--border);
     }
-    .preview-full-code .editor-toolbar { background: #161210; }
-    .preview-full-code pre {
-      padding: 24px;
-      font-family: var(--mono); font-size: 13px;
-      color: #E8DFD3; line-height: 1.8;
-      overflow-x: auto;
+    .live-app-bar {
+      padding: 10px 16px;
+      background: var(--surface-alt);
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 8px;
+    }
+    .live-app-bar-left { display: flex; align-items: center; gap: 8px; }
+    .live-status-dot {
+      width: 8px; height: 8px; border-radius: 50%; background: var(--border);
+      transition: background 0.3s;
+    }
+    .live-status-dot.running { background: var(--success); animation: pulse-dot 1.5s infinite; }
+    .live-status-dot.ready { background: var(--success); }
+    @keyframes pulse-dot { 0%,100%{opacity:1} 50%{opacity:0.4} }
+    .live-app-label { font-size: 12px; color: var(--text-secondary); font-weight: 500; }
+
+    /* Journal chat UI */
+    .journal-app {
+      background: var(--bg);
+      display: flex; flex-direction: column;
+      height: 380px;
+    }
+    .journal-messages {
+      flex: 1; overflow-y: auto; padding: 16px;
+      display: flex; flex-direction: column; gap: 12px;
+    }
+    .journal-messages::-webkit-scrollbar { width: 4px; }
+    .journal-messages::-webkit-scrollbar-track { background: transparent; }
+    .journal-messages::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+    .msg {
+      max-width: 85%; animation: fadeUp 0.3s ease;
+    }
+    .msg-user {
+      align-self: flex-end;
+      background: var(--accent);
+      color: #fff;
+      padding: 12px 16px;
+      border-radius: 18px 18px 4px 18px;
+      font-size: 14px; line-height: 1.5;
+    }
+    .msg-ai {
+      align-self: flex-start;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 12px 16px;
+      border-radius: 18px 18px 18px 4px;
+      font-size: 14px; line-height: 1.6;
+      color: var(--text);
+    }
+    .msg-ai.streaming { border-color: var(--accent-light); }
+    .msg-ai .typing-cursor { display: inline-block; width: 2px; height: 14px; background: var(--accent); margin-left: 2px; animation: blink 0.8s infinite; vertical-align: middle; }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+    .journal-input-row {
+      display: flex; gap: 8px; padding: 12px 16px;
+      border-top: 1px solid var(--border);
+      background: var(--surface);
+    }
+    .journal-input-row textarea {
+      flex: 1; resize: none; border: 1px solid var(--border);
+      border-radius: var(--radius-sm); padding: 10px 14px;
+      font-family: var(--sans); font-size: 14px; color: var(--text);
+      background: var(--surface-alt); line-height: 1.5;
+      min-height: 44px; max-height: 120px; overflow-y: auto;
+    }
+    .journal-input-row textarea:focus { outline: none; border-color: var(--accent); }
+    .journal-input-row textarea::placeholder { color: var(--text-tertiary); }
+    .send-btn {
+      width: 44px; height: 44px; border-radius: 50%;
+      background: var(--accent); border: none; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.2s; flex-shrink: 0; align-self: flex-end;
+    }
+    .send-btn:hover { background: var(--accent-dark); transform: scale(1.05); }
+    .send-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+    .send-btn svg { width: 18px; height: 18px; color: #fff; }
+
+    /* Summarizer split UI */
+    .summarizer-app {
+      background: var(--bg);
+      display: flex;
+      height: 380px;
+    }
+    .summarizer-left {
+      flex: 1; display: flex; flex-direction: column;
+      border-right: 1px solid var(--border);
+    }
+    .summarizer-right {
+      flex: 1; display: flex; flex-direction: column;
+    }
+    .summarizer-panel-label {
+      padding: 10px 16px;
+      font-size: 11px; font-weight: 600; text-transform: uppercase;
+      letter-spacing: 0.06em; color: var(--text-tertiary);
+      border-bottom: 1px solid var(--border);
+      background: var(--surface-alt);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .summarizer-textarea {
+      flex: 1; resize: none; border: none; outline: none;
+      padding: 16px; font-family: var(--sans); font-size: 14px;
+      color: var(--text); background: transparent; line-height: 1.6;
+    }
+    .summarizer-textarea::placeholder { color: var(--text-tertiary); }
+    .summarizer-action {
+      padding: 10px 16px; border-top: 1px solid var(--border);
+      background: var(--surface);
+    }
+    .summarizer-output {
+      flex: 1; padding: 16px; overflow-y: auto; font-size: 14px; line-height: 1.7;
+      color: var(--text);
+    }
+    .summarizer-output::-webkit-scrollbar { width: 4px; }
+    .summarizer-output::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+    .summarizer-placeholder {
+      color: var(--text-tertiary); font-size: 13px;
+      display: flex; align-items: center; justify-content: center;
+      height: 100%; text-align: center; padding: 20px;
+    }
+    .summary-bullet { display: flex; gap: 10px; margin-bottom: 10px; animation: fadeUp 0.3s ease; }
+    .summary-bullet-dot {
+      width: 6px; height: 6px; border-radius: 50%; background: var(--accent);
+      flex-shrink: 0; margin-top: 8px;
     }
 
-    /* ---- Launch (Step 7) ---- */
+    /* Travel planner card UI */
+    .travel-app {
+      background: var(--bg);
+      display: flex; flex-direction: column;
+      height: 420px;
+    }
+    .travel-input-row {
+      padding: 12px 16px; border-bottom: 1px solid var(--border);
+      background: var(--surface);
+      display: flex; gap: 8px; align-items: flex-end;
+    }
+    .travel-input-row textarea {
+      flex: 1; resize: none; border: 1px solid var(--border);
+      border-radius: var(--radius-sm); padding: 10px 14px;
+      font-family: var(--sans); font-size: 14px; color: var(--text);
+      background: var(--surface-alt); line-height: 1.5; min-height: 44px;
+    }
+    .travel-input-row textarea:focus { outline: none; border-color: var(--accent); }
+    .travel-input-row textarea::placeholder { color: var(--text-tertiary); }
+    .travel-output {
+      flex: 1; overflow-y: auto; padding: 16px;
+      display: flex; flex-direction: column; gap: 12px;
+    }
+    .travel-output::-webkit-scrollbar { width: 4px; }
+    .travel-output::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+    .travel-placeholder {
+      color: var(--text-tertiary); font-size: 13px; text-align: center;
+      padding: 40px 20px;
+    }
+    .day-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 16px;
+      animation: fadeUp 0.4s ease;
+    }
+    .day-card-header {
+      font-weight: 600; font-size: 14px; color: var(--accent);
+      margin-bottom: 8px; display: flex; align-items: center; gap: 8px;
+    }
+    .day-card-body { font-size: 13px; color: var(--text-secondary); line-height: 1.7; }
+    .travel-streaming-card {
+      background: var(--surface);
+      border: 1px solid var(--accent-light);
+      border-radius: var(--radius-sm);
+      padding: 16px;
+      font-size: 13px; color: var(--text-secondary); line-height: 1.7;
+      animation: fadeUp 0.3s ease;
+      white-space: pre-wrap;
+    }
+
+    /* ---- Run button state ---- */
+    .run-btn-row { display: flex; flex-direction: column; gap: 10px; }
+    .run-hint { font-size: 12px; color: var(--text-tertiary); }
+
+    /* ---- Launch (Step 6) ---- */
     .launch-page {
       flex: 1; display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
-      text-align: center; padding: 40px 24px;
-      max-width: 560px; margin: 0 auto;
+      padding: 40px 24px 60px;
+      max-width: 900px; margin: 0 auto; width: 100%;
+    }
+    .launch-top {
+      display: flex; flex-direction: column; align-items: center;
+      text-align: center; margin-bottom: 40px;
     }
     .launch-celebration {
-      width: 96px; height: 96px; border-radius: 50%;
+      width: 80px; height: 80px; border-radius: 50%;
       background: var(--success-light);
       display: flex; align-items: center; justify-content: center;
-      font-size: 44px; margin-bottom: 28px;
+      font-size: 36px; margin-bottom: 20px;
       animation: pop 0.5s ease;
     }
     @keyframes pop {
@@ -498,52 +675,105 @@
     .launch-page h2 {
       font-size: 32px; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 8px;
     }
-    .launch-page > p { color: var(--text-secondary); font-size: 15px; margin-bottom: 32px; }
-    .launch-actions { display: flex; flex-direction: column; gap: 12px; width: 100%; max-width: 320px; }
-    .launch-actions .btn { width: 100%; justify-content: center; }
-    .launch-stats {
-      display: flex; gap: 32px; margin-top: 40px;
-      padding-top: 32px; border-top: 1px solid var(--border);
-    }
-    .launch-stat { text-align: center; }
-    .launch-stat .num { font-size: 28px; font-weight: 700; color: var(--accent); }
-    .launch-stat .label { font-size: 12px; color: var(--text-tertiary); margin-top: 2px; }
+    .launch-page > .launch-top > p { color: var(--text-secondary); font-size: 16px; max-width: 480px; }
 
-    /* ---- Console ---- */
-    .console-panel {
-      background: #1E1A14;
+    /* Live app in launch */
+    .launch-live-section {
+      margin-bottom: 40px;
+    }
+    .launch-live-label {
+      font-size: 13px; font-weight: 600; color: var(--text-tertiary);
+      text-transform: uppercase; letter-spacing: 0.06em;
+      margin-bottom: 12px; display: flex; align-items: center; gap: 8px;
+    }
+    .launch-live-label span {
+      width: 8px; height: 8px; border-radius: 50%; background: var(--success);
+      display: inline-block; animation: pulse-dot 1.5s infinite;
+    }
+
+    .launch-bottom {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 24px;
+    }
+
+    .launch-code-section {}
+    .launch-code-section h3 { font-size: 15px; font-weight: 600; margin-bottom: 12px; }
+
+    .launch-actions-section {}
+    .launch-actions-section h3 { font-size: 15px; font-weight: 600; margin-bottom: 12px; }
+
+    .launch-actions { display: flex; flex-direction: column; gap: 10px; }
+    .launch-actions .btn { justify-content: center; }
+
+    .launch-stats {
+      display: flex; gap: 24px; margin-bottom: 28px;
+      padding: 20px; background: var(--surface-alt);
+      border: 1px solid var(--border); border-radius: var(--radius);
+    }
+    .launch-stat { text-align: center; flex: 1; }
+    .launch-stat .num { font-size: 24px; font-weight: 700; color: var(--accent); }
+    .launch-stat .label { font-size: 11px; color: var(--text-tertiary); margin-top: 2px; text-transform: uppercase; letter-spacing: 0.04em; }
+
+    /* What's next */
+    .whats-next {
+      background: linear-gradient(135deg, var(--accent-light), var(--purple-light));
+      border: 1px solid var(--border);
       border-radius: var(--radius);
-      overflow: hidden;
-      margin-bottom: 24px;
-      box-shadow: var(--shadow-lg);
+      padding: 24px;
+      margin-top: 32px;
     }
-    .console-bar {
-      padding: 10px 16px;
-      background: #161210;
+    .whats-next h3 { font-size: 17px; font-weight: 700; margin-bottom: 6px; }
+    .whats-next p { font-size: 14px; color: var(--text-secondary); margin-bottom: 16px; }
+    .whats-next-items { display: flex; flex-direction: column; gap: 10px; }
+    .whats-next-item {
+      display: flex; align-items: flex-start; gap: 12px;
+      background: rgba(255,255,255,0.7); border-radius: var(--radius-sm);
+      padding: 14px 16px;
+    }
+    .whats-next-icon { font-size: 20px; flex-shrink: 0; margin-top: 1px; }
+    .whats-next-text h4 { font-size: 14px; font-weight: 600; margin-bottom: 2px; }
+    .whats-next-text p { font-size: 13px; color: var(--text-secondary); margin: 0; }
+
+    /* ---- Code modal ---- */
+    .code-modal-overlay {
+      display: none;
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(45,36,22,0.4);
+      backdrop-filter: blur(4px);
+      z-index: 300;
+      align-items: center; justify-content: center;
+    }
+    .code-modal-overlay.visible { display: flex; }
+    .code-modal {
+      background: #1E1A14; border-radius: var(--radius-lg);
+      max-width: 640px; width: 92%; max-height: 80vh;
+      overflow: auto; box-shadow: 0 16px 48px rgba(0,0,0,0.4);
+      animation: fadeUp 0.3s ease;
+    }
+    .code-modal-bar {
+      padding: 12px 20px; background: #161210;
       border-bottom: 1px solid #2A251E;
-      display: flex; align-items: center; gap: 8px;
+      display: flex; justify-content: space-between; align-items: center;
+      position: sticky; top: 0; z-index: 1;
     }
-    .console-bar .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--success); }
-    .console-bar span { font-family: var(--mono); font-size: 12px; color: #6B6257; }
-    .console-output {
-      padding: 16px 20px;
-      font-family: var(--mono); font-size: 13px;
-      color: #8BC492; line-height: 1.8;
-      min-height: 80px;
+    .code-modal-bar span { font-family: var(--mono); font-size: 12px; color: #8A7E6F; }
+    .code-modal-close {
+      background: none; border: none; color: #8A7E6F; cursor: pointer;
+      font-size: 20px; padding: 2px 6px; line-height: 1;
     }
-    .console-output .prompt-char { color: var(--accent); }
-    .console-output .output { color: #E8DFD3; }
-    .console-typing::after {
-      content: '|'; animation: blink 0.8s infinite;
+    .code-modal pre {
+      padding: 20px; font-family: var(--mono); font-size: 13px;
+      color: #E8DFD3; line-height: 1.8; margin: 0; white-space: pre-wrap;
     }
-    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
 
     /* ---- Responsive ---- */
     @media (max-width: 768px) {
       .build-content { flex-direction: column; }
       .build-explanation { flex: none; position: static; }
       .welcome h1 { font-size: 28px; }
-      .launch-stats { gap: 20px; }
+      .summarizer-app { flex-direction: column; height: auto; }
+      .summarizer-left { border-right: none; border-bottom: 1px solid var(--border); height: 200px; }
+      .summarizer-right { height: 200px; }
+      .launch-bottom { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -564,6 +794,7 @@
       <div class="topbar-dot" data-step="3"></div>
       <div class="topbar-dot" data-step="4"></div>
       <div class="topbar-dot" data-step="5"></div>
+      <div class="topbar-dot" data-step="6"></div>
       <span class="topbar-step-label">Welcome</span>
     </div>
   </nav>
@@ -578,11 +809,11 @@
           Takes about 10 minutes
         </div>
         <h1>Build your first <em>AI project</em> — no coding experience needed</h1>
-        <p>You already talk to AI every day. Now learn to build with it. We'll go from zero to a working project, one small step at a time.</p>
+        <p>You already talk to AI every day. Now learn to build with it. We'll go from zero to a working project you can actually use — one small step at a time.</p>
         <div class="welcome-reassurance">
           <span><span class="check">&#10003;</span> No installs needed</span>
           <span><span class="check">&#10003;</span> Plain-English explanations</span>
-          <span><span class="check">&#10003;</span> You can't break anything</span>
+          <span><span class="check">&#10003;</span> You'll run it live today</span>
         </div>
         <button class="btn btn-primary" onclick="goToStep(1)">
           Let's start
@@ -763,9 +994,7 @@
                 <div class="editor-dots"><span></span><span></span><span></span></div>
                 <div class="editor-filename" id="build1-filename">journal.py</div>
               </div>
-              <div class="editor-body" id="build1-code">
-                <!-- filled by JS -->
-              </div>
+              <div class="editor-body" id="build1-code"></div>
             </div>
           </div>
         </div>
@@ -818,20 +1047,23 @@
             <div class="build-step-pip done"></div>
             <div class="build-step-pip active"></div>
           </div>
-          <span class="build-step-label">Step 3 of 3 — Make it interactive</span>
+          <span class="build-step-label">Step 3 of 3 — Run it live</span>
         </div>
         <div class="build-content">
           <div class="build-explanation">
-            <h3>Bringing it to life</h3>
-            <p id="build3-desc">The final piece — we add user input so anyone can use your tool. Then we run it!</p>
+            <h3>Try it right now</h3>
+            <p id="build3-desc">The code is ready. Now let's actually run it — type something below and watch your AI project respond in real time.</p>
             <div class="build-tip">
-              <div class="build-tip-label">What this does</div>
-              <p id="build3-tip">This code waits for the user to type something, sends it to your AI function, and prints the result. It's the complete loop!</p>
+              <div class="build-tip-label">What's happening</div>
+              <p id="build3-tip">When you hit send, your code calls the Claude API with the prompt you chose. The response streams back live — no scripted demo, this is real AI.</p>
             </div>
-            <button class="btn btn-primary" onclick="runPreview()">
-              Run my project
-              <svg viewBox="0 0 16 16" fill="none"><path d="M5 3l8 5-8 5V3z" fill="currentColor"/></svg>
-            </button>
+            <div class="run-btn-row">
+              <button class="btn btn-primary" id="launch-btn" onclick="goToLaunch()">
+                I built it — celebrate!
+                <svg viewBox="0 0 16 16" fill="none"><path d="M8 2l1.5 3 3.5.5-2.5 2.5.5 3.5L8 10l-3 1.5.5-3.5L3 5.5 6.5 5z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+              </button>
+              <span class="run-hint">Try it first — then celebrate &#128516;</span>
+            </div>
           </div>
           <div class="build-editor">
             <div class="editor-wrapper">
@@ -841,12 +1073,15 @@
               </div>
               <div class="editor-body" id="build3-code"></div>
             </div>
-            <div class="console-panel" id="console" style="margin-top: 16px; display: none;">
-              <div class="console-bar">
-                <div class="dot"></div>
-                <span>Terminal</span>
+            <!-- Live app panel -->
+            <div class="live-app-wrapper" id="live-app-container">
+              <div class="live-app-bar">
+                <div class="live-app-bar-left">
+                  <div class="live-status-dot ready" id="live-status-dot"></div>
+                  <span class="live-app-label" id="live-app-label">Live preview — try it!</span>
+                </div>
               </div>
-              <div class="console-output" id="console-output"></div>
+              <div id="live-app-ui"><!-- filled by JS per project --></div>
             </div>
           </div>
         </div>
@@ -856,20 +1091,12 @@
     <!-- STEP 6: Launch -->
     <section class="step" data-step="6">
       <div class="launch-page">
-        <div class="launch-celebration">&#127881;</div>
-        <h2>You built it!</h2>
-        <p id="launch-desc">Your AI Journal Buddy is complete. It's real code that actually works. You went from curious to builder in minutes.</p>
-        <div class="launch-actions">
-          <button class="btn btn-primary" onclick="showFullCode()">
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M5 6l2 2-2 2M9 10h2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            View full code
-          </button>
-          <button class="btn btn-secondary" onclick="copyCode()">
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="5" y="5" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.5"/><path d="M3 11V3h8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-            Copy to clipboard
-          </button>
-          <button class="btn btn-ghost" onclick="goToStep(2)">Build another project &rarr;</button>
+        <div class="launch-top">
+          <div class="launch-celebration" id="launch-emoji">&#127881;</div>
+          <h2>You built it — for real.</h2>
+          <p id="launch-desc">That response you just saw? That was your code calling Claude's API live. You're officially a builder.</p>
         </div>
+
         <div class="launch-stats">
           <div class="launch-stat">
             <div class="num">3</div>
@@ -881,7 +1108,64 @@
           </div>
           <div class="launch-stat">
             <div class="num">1</div>
-            <div class="label">Working project</div>
+            <div class="label">Live AI app built</div>
+          </div>
+        </div>
+
+        <!-- Live app again so they can keep playing -->
+        <div class="launch-live-section">
+          <div class="launch-live-label"><span></span> Keep playing with your project</div>
+          <div class="live-app-wrapper" id="launch-live-app">
+            <div class="live-app-bar">
+              <div class="live-app-bar-left">
+                <div class="live-status-dot ready"></div>
+                <span class="live-app-label" id="launch-live-label">Your app is live</span>
+              </div>
+            </div>
+            <div id="launch-live-ui"><!-- filled by JS --></div>
+          </div>
+        </div>
+
+        <div class="launch-bottom">
+          <div class="launch-code-section">
+            <h3>Your code</h3>
+            <div class="launch-actions">
+              <button class="btn btn-primary" onclick="showFullCode()">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M5 6l2 2-2 2M9 10h2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                View full code
+              </button>
+              <button class="btn btn-secondary" onclick="copyCode()">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="5" y="5" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.5"/><path d="M3 11V3h8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+                Copy to clipboard
+              </button>
+              <button class="btn btn-ghost" onclick="goToStep(2)">Build another project &rarr;</button>
+            </div>
+          </div>
+          <div class="launch-actions-section">
+            <h3>What's next?</h3>
+            <div class="whats-next-items">
+              <div class="whats-next-item">
+                <div class="whats-next-icon">&#128187;</div>
+                <div class="whats-next-text">
+                  <h4>Run it on your own machine</h4>
+                  <p>Copy the Python code, install the Anthropic library, add your API key. Five minutes to local.</p>
+                </div>
+              </div>
+              <div class="whats-next-item">
+                <div class="whats-next-icon">&#9889;</div>
+                <div class="whats-next-text">
+                  <h4>Try Claude Code</h4>
+                  <p>Claude Code is an AI coding assistant that helps you build bigger projects — just describe what you want.</p>
+                </div>
+              </div>
+              <div class="whats-next-item">
+                <div class="whats-next-icon">&#127759;</div>
+                <div class="whats-next-text">
+                  <h4>Build your own idea</h4>
+                  <p>You know the three pieces now: Prompt, API, Function. What would you build for yourself?</p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -889,16 +1173,27 @@
 
   </div>
 
-  <!-- Tooltip Overlay -->
+  <!-- Tooltip Overlay (edit prompt) -->
   <div class="tooltip-overlay" id="tooltip-overlay" onclick="if(event.target===this)closeTooltip()">
     <div class="tooltip-card">
       <h4 id="tooltip-title">Edit this prompt</h4>
       <p id="tooltip-desc">Change the instruction AI receives. Try making it more specific or changing the tone.</p>
-      <input type="text" id="tooltip-input" value="" placeholder="Type your custom prompt...">
+      <textarea id="tooltip-input" placeholder="Type your custom prompt..."></textarea>
       <div class="tooltip-actions">
         <button class="btn btn-ghost" onclick="closeTooltip()">Cancel</button>
         <button class="btn btn-primary" onclick="applyTooltip()">Apply</button>
       </div>
+    </div>
+  </div>
+
+  <!-- Code modal -->
+  <div class="code-modal-overlay" id="code-modal" onclick="if(event.target===this)closeCodeModal()">
+    <div class="code-modal">
+      <div class="code-modal-bar">
+        <span id="code-modal-filename">journal.py</span>
+        <button class="code-modal-close" onclick="closeCodeModal()">&times;</button>
+      </div>
+      <pre id="code-modal-content"></pre>
     </div>
   </div>
 
@@ -908,8 +1203,12 @@
     let selectedProject = null;
     let unlockedConcepts = new Set();
     let customPrompt = null;
+    let hasRunLive = false;
 
     const stepLabels = ['Welcome', 'Learn', 'Choose', 'Build 1/3', 'Build 2/3', 'Build 3/3', 'Launch'];
+
+    // Proxy endpoint — works locally via Vercel dev, and in production
+    const API_URL = '/api/chat';
 
     // ---- PROJECT DATA ----
     const projects = {
@@ -917,6 +1216,8 @@
         name: 'AI Journal Buddy',
         filename: 'journal.py',
         lines: 18,
+        liveLabel: 'AI Journal Buddy — write an entry below',
+        launchEmoji: '📓',
         build1: {
           desc: 'Every project starts by importing the tools it needs and setting up the connection to Claude\'s AI.',
           tip: 'The first two lines are like plugging in your appliances before cooking. We\'re connecting to the Claude API so our code can talk to AI.',
@@ -953,11 +1254,11 @@
           }
         },
         build3: {
-          desc: 'The final piece — we add a loop so you can journal as many entries as you want, getting reflections after each one.',
-          tip: 'This loop keeps running until you type "quit". Each entry goes through your reflect() function and prints the AI\'s response.',
+          desc: 'The code is complete. Type a journal entry in the live preview below — watch your AI project reflect back in real time.',
+          tip: 'When you hit send, your code calls the Claude API live. This is the same call running on the right — real AI, not a demo.',
           code: [
             { n: 21, c: '<span class="comment"># Let the user journal</span>' },
-            { n: 22, c: '<span class="fn">print</span>(<span class="string">"📓 Journal Buddy is ready. Type your entry (or \'quit\' to exit):"</span>)' },
+            { n: 22, c: '<span class="fn">print</span>(<span class="string">"📓 Journal Buddy is ready. Type your entry:"</span>)' },
             { n: 23, c: '' },
             { n: 24, c: '<span class="keyword">while</span> <span class="keyword">True</span>:' },
             { n: 25, c: '    entry = <span class="fn">input</span>(<span class="string">"\\n✏️  "</span>)' },
@@ -966,58 +1267,19 @@
             { n: 28, c: '        <span class="keyword">break</span>' },
             { n: 29, c: '    reflection = <span class="fn">reflect</span>(entry)' },
             { n: 30, c: '    <span class="fn">print</span>(<span class="string">f"\\n🪞 {reflection}\\n"</span>)' },
-          ],
-          consoleDemo: [
-            { delay: 0, text: '<span class="prompt-char">$</span> python journal.py' },
-            { delay: 600, text: '<span class="output">📓 Journal Buddy is ready. Type your entry (or \'quit\' to exit):</span>' },
-            { delay: 1200, text: '' },
-            { delay: 1500, text: '<span class="output">✏️  Today was stressful. I had three meetings back to back and didn\'t get any real work done.</span>' },
-            { delay: 2200, text: '' },
-            { delay: 2800, text: '<span class="output">🪞 It sounds like today felt like a treadmill — lots of motion but not much progress on what matters to you. That tension between "being busy" and "doing meaningful work" is really common, and the fact that you notice it shows real self-awareness.</span>' },
-            { delay: 3400, text: '' },
-            { delay: 3800, text: '<span class="output">What would it look like to protect just one hour tomorrow for your most important task? 💛</span>' },
           ]
         },
         fullCode: function(prompt) {
           const p = prompt || this.build2.defaultPrompt;
-          return `# AI Journal Buddy — your personal reflection partner
-
-import anthropic
-
-# Connect to Claude
-client = anthropic.Anthropic()
-
-
-def reflect(entry):
-    # Send your entry to Claude with a prompt
-    response = client.messages.create(
-        model="claude-sonnet-4-20250514",
-        max_tokens=1024,
-        messages=[{
-            "role": "user",
-            "content": entry
-        }],
-        system="${p}"
-    )
-    return response.content[0].text
-
-
-# Let the user journal
-print("📓 Journal Buddy is ready. Type your entry (or 'quit' to exit):")
-
-while True:
-    entry = input("\\n✏️  ")
-    if entry.lower() == "quit":
-        print("Thanks for journaling today! 💛")
-        break
-    reflection = reflect(entry)
-    print(f"\\n🪞 {reflection}\\n")`;
+          return `# AI Journal Buddy — your personal reflection partner\n\nimport anthropic\n\n# Connect to Claude\nclient = anthropic.Anthropic()\n\n\ndef reflect(entry):\n    # Send your entry to Claude with a prompt\n    response = client.messages.create(\n        model="claude-sonnet-4-20250514",\n        max_tokens=1024,\n        messages=[{\n            "role": "user",\n            "content": entry\n        }],\n        system="${p}"\n    )\n    return response.content[0].text\n\n\n# Let the user journal\nprint("📓 Journal Buddy is ready. Type your entry (or 'quit' to exit):")\n\nwhile True:\n    entry = input("\\n✏️  ")\n    if entry.lower() == "quit":\n        print("Thanks for journaling today! 💛")\n        break\n    reflection = reflect(entry)\n    print(f"\\n🪞 {reflection}\\n")`;
         }
       },
       summarizer: {
         name: 'Text Summarizer',
         filename: 'summarizer.py',
         lines: 20,
+        liveLabel: 'Text Summarizer — paste text on the left',
+        launchEmoji: '✂️',
         build1: {
           desc: 'We start by connecting to the Claude API — the bridge between your code and AI.',
           tip: 'Just like before: import the tools, create the connection. Every AI project starts this same way.',
@@ -1054,11 +1316,11 @@ while True:
           }
         },
         build3: {
-          desc: 'Now we let the user paste text and get summaries back — a complete, usable tool.',
-          tip: 'The loop keeps accepting text until you type "quit". Every paste gets transformed into clean bullet points.',
+          desc: 'Paste any text on the right side and watch your summarizer turn it into clean bullet points — powered by Claude.',
+          tip: 'This is your code running live. Paste a news article, a paragraph, anything — and see the AI distill it instantly.',
           code: [
             { n: 21, c: '<span class="comment"># Let the user summarize text</span>' },
-            { n: 22, c: '<span class="fn">print</span>(<span class="string">"✂️ Text Summarizer ready. Paste text (or \'quit\' to exit):"</span>)' },
+            { n: 22, c: '<span class="fn">print</span>(<span class="string">"✂️ Text Summarizer ready. Paste text:"</span>)' },
             { n: 23, c: '' },
             { n: 24, c: '<span class="keyword">while</span> <span class="keyword">True</span>:' },
             { n: 25, c: '    text = <span class="fn">input</span>(<span class="string">"\\n📝 Paste text: "</span>)' },
@@ -1067,59 +1329,19 @@ while True:
             { n: 28, c: '        <span class="keyword">break</span>' },
             { n: 29, c: '    summary = <span class="fn">summarize</span>(text)' },
             { n: 30, c: '    <span class="fn">print</span>(<span class="string">f"\\n📋 Summary:\\n{summary}\\n"</span>)' },
-          ],
-          consoleDemo: [
-            { delay: 0, text: '<span class="prompt-char">$</span> python summarizer.py' },
-            { delay: 600, text: '<span class="output">✂️ Text Summarizer ready. Paste text (or \'quit\' to exit):</span>' },
-            { delay: 1200, text: '' },
-            { delay: 1500, text: '<span class="output">📝 Paste text: The James Webb Space Telescope has discovered evidence of carbon dioxide in the atmosphere of a distant exoplanet...</span>' },
-            { delay: 2200, text: '' },
-            { delay: 2800, text: '<span class="output">📋 Summary:</span>' },
-            { delay: 3200, text: '<span class="output">• JWST detected CO₂ on exoplanet WASP-39b, a first for any space telescope</span>' },
-            { delay: 3500, text: '<span class="output">• The finding confirms JWST can analyze distant planet atmospheres in detail</span>' },
-            { delay: 3800, text: '<span class="output">• This technique will help search for signs of life on other worlds</span>' },
           ]
         },
         fullCode: function(prompt) {
           const p = prompt || this.build2.defaultPrompt;
-          return `# Text Summarizer — paste anything, get bullet points
-
-import anthropic
-
-# Connect to Claude
-client = anthropic.Anthropic()
-
-
-def summarize(text):
-    # Ask Claude to summarize
-    response = client.messages.create(
-        model="claude-sonnet-4-20250514",
-        max_tokens=1024,
-        messages=[{
-            "role": "user",
-            "content": text
-        }],
-        system="${p}"
-    )
-    return response.content[0].text
-
-
-# Let the user summarize text
-print("✂️ Text Summarizer ready. Paste text (or 'quit' to exit):")
-
-while True:
-    text = input("\\n📝 Paste text: ")
-    if text.lower() == "quit":
-        print("Happy reading! 📚")
-        break
-    summary = summarize(text)
-    print(f"\\n📋 Summary:\\n{summary}\\n")`;
+          return `# Text Summarizer — paste anything, get bullet points\n\nimport anthropic\n\n# Connect to Claude\nclient = anthropic.Anthropic()\n\n\ndef summarize(text):\n    # Ask Claude to summarize\n    response = client.messages.create(\n        model="claude-sonnet-4-20250514",\n        max_tokens=1024,\n        messages=[{\n            "role": "user",\n            "content": text\n        }],\n        system="${p}"\n    )\n    return response.content[0].text\n\n\n# Let the user summarize text\nprint("✂️ Text Summarizer ready. Paste text (or 'quit' to exit):")\n\nwhile True:\n    text = input("\\n📝 Paste text: ")\n    if text.lower() == "quit":\n        print("Happy reading! 📚")\n        break\n    summary = summarize(text)\n    print(f"\\n📋 Summary:\\n{summary}\\n")`;
         }
       },
       travel: {
         name: 'Travel Planner',
         filename: 'travel_planner.py',
         lines: 24,
+        liveLabel: 'Travel Planner — describe your dream trip',
+        launchEmoji: '✈️',
         build1: {
           desc: 'Same start as before — connect to Claude. This time we\'ll also set up a system prompt that gives Claude a travel-expert personality.',
           tip: 'We\'re giving Claude a "role" right from the start. Think of it like briefing a travel agent before they plan your trip.',
@@ -1156,70 +1378,24 @@ while True:
           }
         },
         build3: {
-          desc: 'Now let\'s make it interactive — users describe their trip and get a full plan back.',
-          tip: 'You describe the destination, dates, and vibe — the AI handles the rest. A complete travel planning tool in 24 lines.',
+          desc: 'Describe your dream trip below and watch your travel planner build the itinerary live, day by day.',
+          tip: 'Include destination, dates, budget, and what you enjoy. The more detail you give the AI, the better the plan it creates.',
           code: [
             { n: 21, c: '<span class="comment"># Let the user plan trips</span>' },
             { n: 22, c: '<span class="fn">print</span>(<span class="string">"✈️ Travel Planner ready! Describe your dream trip:"</span>)' },
-            { n: 23, c: '<span class="fn">print</span>(<span class="string">"(Include destination, dates, budget, and what you enjoy)\\n"</span>)' },
-            { n: 24, c: '' },
-            { n: 25, c: '<span class="keyword">while</span> <span class="keyword">True</span>:' },
-            { n: 26, c: '    trip = <span class="fn">input</span>(<span class="string">"🌍 Your trip: "</span>)' },
-            { n: 27, c: '    <span class="keyword">if</span> trip.lower() == <span class="string">"quit"</span>:' },
-            { n: 28, c: '        <span class="fn">print</span>(<span class="string">"Bon voyage! 🧳"</span>)' },
-            { n: 29, c: '        <span class="keyword">break</span>' },
-            { n: 30, c: '    itinerary = <span class="fn">plan_trip</span>(trip)' },
-            { n: 31, c: '    <span class="fn">print</span>(<span class="string">f"\\n📅 Your Itinerary:\\n{itinerary}\\n"</span>)' },
-          ],
-          consoleDemo: [
-            { delay: 0, text: '<span class="prompt-char">$</span> python travel_planner.py' },
-            { delay: 600, text: '<span class="output">✈️ Travel Planner ready! Describe your dream trip:</span>' },
-            { delay: 800, text: '<span class="output">(Include destination, dates, budget, and what you enjoy)</span>' },
-            { delay: 1400, text: '' },
-            { delay: 1800, text: '<span class="output">🌍 Your trip: 4 days in Tokyo, ~$150/day budget, love street food and hidden temples</span>' },
-            { delay: 2600, text: '' },
-            { delay: 3200, text: '<span class="output">📅 Your Itinerary:</span>' },
-            { delay: 3500, text: '<span class="output">Day 1 — Asakusa & East Tokyo</span>' },
-            { delay: 3700, text: '<span class="output">• Morning: Senso-ji Temple (free) — arrive by 7am to beat crowds</span>' },
-            { delay: 3900, text: '<span class="output">• Lunch: Hoppy Street for yakitori (~¥800)</span>' },
-            { delay: 4100, text: '<span class="output">• Afternoon: Yanaka district — old Tokyo charm, hidden temples...</span>' },
+            { n: 23, c: '' },
+            { n: 24, c: '<span class="keyword">while</span> <span class="keyword">True</span>:' },
+            { n: 25, c: '    trip = <span class="fn">input</span>(<span class="string">"🌍 Your trip: "</span>)' },
+            { n: 26, c: '    <span class="keyword">if</span> trip.lower() == <span class="string">"quit"</span>:' },
+            { n: 27, c: '        <span class="fn">print</span>(<span class="string">"Bon voyage! 🧳"</span>)' },
+            { n: 28, c: '        <span class="keyword">break</span>' },
+            { n: 29, c: '    itinerary = <span class="fn">plan_trip</span>(trip)' },
+            { n: 30, c: '    <span class="fn">print</span>(<span class="string">f"\\n📅 Your Itinerary:\\n{itinerary}\\n"</span>)' },
           ]
         },
         fullCode: function(prompt) {
           const p = prompt || this.build2.defaultPrompt;
-          return `# Travel Planner — describe your dream trip, get an itinerary
-
-import anthropic
-
-# Connect to Claude
-client = anthropic.Anthropic()
-
-
-def plan_trip(description):
-    # Ask Claude to plan the trip
-    response = client.messages.create(
-        model="claude-sonnet-4-20250514",
-        max_tokens=2048,
-        messages=[{
-            "role": "user",
-            "content": description
-        }],
-        system="${p}"
-    )
-    return response.content[0].text
-
-
-# Let the user plan trips
-print("✈️ Travel Planner ready! Describe your dream trip:")
-print("(Include destination, dates, budget, and what you enjoy)\\n")
-
-while True:
-    trip = input("🌍 Your trip: ")
-    if trip.lower() == "quit":
-        print("Bon voyage! 🧳")
-        break
-    itinerary = plan_trip(trip)
-    print(f"\\n📅 Your Itinerary:\\n{itinerary}\\n")`;
+          return `# Travel Planner — describe your dream trip, get an itinerary\n\nimport anthropic\n\n# Connect to Claude\nclient = anthropic.Anthropic()\n\n\ndef plan_trip(description):\n    # Ask Claude to plan the trip\n    response = client.messages.create(\n        model="claude-sonnet-4-20250514",\n        max_tokens=2048,\n        messages=[{\n            "role": "user",\n            "content": description\n        }],\n        system="${p}"\n    )\n    return response.content[0].text\n\n\n# Let the user plan trips\nprint("✈️ Travel Planner ready! Describe your dream trip:")\nprint("(Include destination, dates, budget, and what you enjoy)\\n")\n\nwhile True:\n    trip = input("🌍 Your trip: ")\n    if trip.lower() == "quit":\n        print("Bon voyage! 🧳")\n        break\n    itinerary = plan_trip(trip)\n    print(f"\\n📅 Your Itinerary:\\n{itinerary}\\n")`;
         }
       }
     };
@@ -1230,7 +1406,6 @@ while True:
       document.querySelector(`.step[data-step="${n}"]`).classList.add('active');
       currentStep = n;
 
-      // Update dots
       document.querySelectorAll('.topbar-dot').forEach((dot, i) => {
         dot.classList.remove('active', 'done');
         if (i === n) dot.classList.add('active');
@@ -1238,7 +1413,6 @@ while True:
       });
       document.querySelector('.topbar-step-label').textContent = stepLabels[n] || '';
 
-      // Populate build steps if on build pages
       if (n >= 3 && n <= 5 && selectedProject) {
         populateBuildStep(n);
       }
@@ -1248,13 +1422,11 @@ while True:
     // ---- CONCEPTS ----
     function toggleConcept(card) {
       const wasExpanded = card.classList.contains('expanded');
-      // Close all first
       document.querySelectorAll('.concept-card').forEach(c => c.classList.remove('expanded'));
       if (!wasExpanded) {
         card.classList.add('expanded');
         unlockedConcepts.add(card.dataset.concept);
       }
-      // Enable next button when all 3 unlocked
       if (unlockedConcepts.size >= 3) {
         const btn = document.getElementById('concepts-next');
         btn.disabled = false;
@@ -1266,6 +1438,7 @@ while True:
     function selectProject(id) {
       selectedProject = id;
       customPrompt = null;
+      hasRunLive = false;
       document.querySelectorAll('.project-option').forEach(o => o.classList.remove('selected'));
       document.querySelector(`.project-option[data-project="${id}"]`).classList.add('selected');
       const btn = document.getElementById('picker-next');
@@ -1306,7 +1479,8 @@ while True:
         document.getElementById('build3-tip').textContent = proj.build3.tip;
         document.getElementById('build3-filename').textContent = proj.filename;
         document.getElementById('build3-code').innerHTML = renderLines(proj.build3.code);
-        document.getElementById('console').style.display = 'none';
+        document.getElementById('live-app-label').textContent = proj.liveLabel;
+        renderLiveApp('live-app-ui', selectedProject);
       }
     }
 
@@ -1330,57 +1504,336 @@ while True:
       closeTooltip();
     }
 
-    // ---- CONSOLE DEMO ----
-    function runPreview() {
+    // ---- LIVE APP RENDERING ----
+    function getSystemPrompt() {
       const proj = projects[selectedProject];
-      const console = document.getElementById('console');
-      const output = document.getElementById('console-output');
-      console.style.display = 'block';
-      output.innerHTML = '';
+      return customPrompt || proj.build2.defaultPrompt;
+    }
 
-      let i = 0;
-      function typeNext() {
-        if (i >= proj.build3.consoleDemo.length) {
-          setTimeout(() => goToStep(6), 1500);
+    function renderLiveApp(containerId, projectId) {
+      const container = document.getElementById(containerId);
+      if (projectId === 'journal') {
+        container.innerHTML = `
+          <div class="journal-app">
+            <div class="journal-messages" id="${containerId}-messages">
+              <div class="msg"><div class="msg-ai">👋 Hi! I'm your journal buddy. Write about your day, a challenge, or anything on your mind — I'll reflect it back to you.</div></div>
+            </div>
+            <div class="journal-input-row">
+              <textarea id="${containerId}-input" placeholder="What's on your mind today?" rows="2" onkeydown="handleJournalKey(event, '${containerId}')"></textarea>
+              <button class="send-btn" id="${containerId}-send" onclick="sendJournal('${containerId}')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+              </button>
+            </div>
+          </div>`;
+      } else if (projectId === 'summarizer') {
+        container.innerHTML = `
+          <div class="summarizer-app">
+            <div class="summarizer-left">
+              <div class="summarizer-panel-label">
+                Paste your text
+                <button class="btn btn-primary" style="padding:6px 14px;font-size:12px;border-radius:100px;" onclick="runSummarizer('${containerId}')">Summarize →</button>
+              </div>
+              <textarea class="summarizer-textarea" id="${containerId}-input" placeholder="Paste any article, email, document, or text here..."></textarea>
+            </div>
+            <div class="summarizer-right">
+              <div class="summarizer-panel-label">Key points</div>
+              <div class="summarizer-output" id="${containerId}-output">
+                <div class="summarizer-placeholder">Paste text on the left and hit Summarize →</div>
+              </div>
+            </div>
+          </div>`;
+      } else if (projectId === 'travel') {
+        container.innerHTML = `
+          <div class="travel-app">
+            <div class="travel-input-row">
+              <textarea id="${containerId}-input" placeholder="e.g. 4 days in Tokyo, ~$150/day, love street food and hidden temples" rows="2" onkeydown="handleTravelKey(event, '${containerId}')"></textarea>
+              <button class="send-btn" id="${containerId}-send" onclick="runTravel('${containerId}')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+              </button>
+            </div>
+            <div class="travel-output" id="${containerId}-output">
+              <div class="travel-placeholder">✈️ Describe your dream trip above — destination, dates, budget, vibe</div>
+            </div>
+          </div>`;
+      }
+    }
+
+    // ---- CLAUDE API CALL (streaming SSE) ----
+    async function streamFromClaude(message, systemPrompt, onChunk, onDone, onError) {
+      try {
+        const res = await fetch(API_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message, systemPrompt, maxTokens: 1024 })
+        });
+
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({ error: 'Request failed' }));
+          onError(err.error || 'Something went wrong');
           return;
         }
-        const item = proj.build3.consoleDemo[i];
-        setTimeout(() => {
-          output.innerHTML += item.text + '<br>';
-          output.scrollTop = output.scrollHeight;
-          i++;
-          typeNext();
-        }, i === 0 ? 300 : item.delay - (proj.build3.consoleDemo[i-1]?.delay || 0));
-      }
-      typeNext();
 
-      // Update launch page
-      document.getElementById('launch-desc').textContent =
-        `Your ${proj.name} is complete. It's real code that actually works. You went from curious to builder in minutes.`;
-      document.getElementById('stat-lines').textContent = proj.lines;
+        const reader = res.body.getReader();
+        const decoder = new TextDecoder();
+        let buffer = '';
+
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          buffer += decoder.decode(value, { stream: true });
+          const lines = buffer.split('\n');
+          buffer = lines.pop();
+
+          for (const line of lines) {
+            if (!line.startsWith('data: ')) continue;
+            const data = line.slice(6).trim();
+            if (data === '[DONE]') { onDone(); return; }
+            try {
+              const parsed = JSON.parse(data);
+              if (parsed.error) { onError(parsed.error); return; }
+              if (parsed.text) onChunk(parsed.text);
+            } catch {}
+          }
+        }
+        onDone();
+      } catch (err) {
+        onError(err.message || 'Network error');
+      }
+    }
+
+    // ---- JOURNAL INTERACTIONS ----
+    function handleJournalKey(e, containerId) {
+      if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendJournal(containerId); }
+    }
+
+    function sendJournal(containerId) {
+      const input = document.getElementById(`${containerId}-input`);
+      const messages = document.getElementById(`${containerId}-messages`);
+      const sendBtn = document.getElementById(`${containerId}-send`);
+      const text = input.value.trim();
+      if (!text) return;
+
+      // Add user bubble
+      messages.innerHTML += `<div class="msg"><div class="msg-user">${escapeHtml(text)}</div></div>`;
+      input.value = '';
+      input.disabled = true;
+      sendBtn.disabled = true;
+      messages.scrollTop = messages.scrollHeight;
+
+      // Add AI bubble with cursor
+      const aiMsgId = `ai-msg-${Date.now()}`;
+      messages.innerHTML += `<div class="msg" id="${aiMsgId}"><div class="msg-ai streaming"><span class="ai-text"></span><span class="typing-cursor"></span></div></div>`;
+      messages.scrollTop = messages.scrollHeight;
+
+      const aiEl = document.querySelector(`#${aiMsgId} .ai-text`);
+
+      // Mark as run
+      hasRunLive = true;
+      setLiveStatus(true);
+
+      streamFromClaude(
+        text,
+        getSystemPrompt(),
+        (chunk) => {
+          aiEl.textContent += chunk;
+          messages.scrollTop = messages.scrollHeight;
+        },
+        () => {
+          // Remove cursor, re-enable
+          const msgEl = document.getElementById(aiMsgId);
+          if (msgEl) {
+            const cursor = msgEl.querySelector('.typing-cursor');
+            if (cursor) cursor.remove();
+            msgEl.querySelector('.msg-ai').classList.remove('streaming');
+          }
+          input.disabled = false;
+          sendBtn.disabled = false;
+          input.focus();
+          setLiveStatus(false);
+        },
+        (err) => {
+          const msgEl = document.getElementById(aiMsgId);
+          if (msgEl) msgEl.querySelector('.msg-ai').innerHTML = `<span style="color:var(--accent)">⚠️ ${escapeHtml(err)}</span>`;
+          input.disabled = false;
+          sendBtn.disabled = false;
+          setLiveStatus(false);
+        }
+      );
+    }
+
+    // ---- SUMMARIZER INTERACTIONS ----
+    function runSummarizer(containerId) {
+      const input = document.getElementById(`${containerId}-input`);
+      const output = document.getElementById(`${containerId}-output`);
+      const text = input.value.trim();
+      if (!text) return;
+
+      output.innerHTML = '<div class="summarizer-placeholder">Summarizing<span class="typing-cursor"></span></div>';
+      hasRunLive = true;
+      setLiveStatus(true);
+
+      let accumulated = '';
+      streamFromClaude(
+        text,
+        getSystemPrompt(),
+        (chunk) => {
+          accumulated += chunk;
+          // Render accumulated text — split on bullet markers for nice bullets
+          renderSummaryOutput(output, accumulated, true);
+        },
+        () => {
+          renderSummaryOutput(output, accumulated, false);
+          setLiveStatus(false);
+        },
+        (err) => {
+          output.innerHTML = `<div class="summarizer-placeholder" style="color:var(--accent)">⚠️ ${escapeHtml(err)}</div>`;
+          setLiveStatus(false);
+        }
+      );
+    }
+
+    function renderSummaryOutput(container, text, streaming) {
+      // Simple render: bullet points on • or - markers, otherwise plain
+      const lines = text.split('\n').filter(l => l.trim());
+      let html = '';
+      for (const line of lines) {
+        const clean = line.replace(/^[•\-\*]\s*/, '').trim();
+        if (!clean) continue;
+        if (line.match(/^[•\-\*]/)) {
+          html += `<div class="summary-bullet"><div class="summary-bullet-dot"></div><div>${escapeHtml(clean)}</div></div>`;
+        } else {
+          html += `<p style="margin-bottom:8px;font-size:14px;">${escapeHtml(clean)}${streaming ? '<span class="typing-cursor"></span>' : ''}</p>`;
+        }
+      }
+      if (streaming && !html) {
+        html = '<div class="summarizer-placeholder">Summarizing<span class="typing-cursor"></span></div>';
+      }
+      container.innerHTML = html;
+      container.scrollTop = container.scrollHeight;
+    }
+
+    // ---- TRAVEL INTERACTIONS ----
+    function handleTravelKey(e, containerId) {
+      if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); runTravel(containerId); }
+    }
+
+    function runTravel(containerId) {
+      const input = document.getElementById(`${containerId}-input`);
+      const output = document.getElementById(`${containerId}-output`);
+      const sendBtn = document.getElementById(`${containerId}-send`);
+      const text = input.value.trim();
+      if (!text) return;
+
+      input.disabled = true;
+      sendBtn.disabled = true;
+      output.innerHTML = '';
+
+      // Create a streaming card
+      const cardId = `travel-card-${Date.now()}`;
+      output.innerHTML = `<div class="travel-streaming-card" id="${cardId}"><span class="typing-cursor"></span></div>`;
+
+      hasRunLive = true;
+      setLiveStatus(true);
+      let accumulated = '';
+
+      streamFromClaude(
+        text,
+        getSystemPrompt(),
+        (chunk) => {
+          accumulated += chunk;
+          const card = document.getElementById(cardId);
+          if (card) {
+            card.textContent = accumulated;
+            // Add cursor back
+            const cursor = document.createElement('span');
+            cursor.className = 'typing-cursor';
+            card.appendChild(cursor);
+          }
+          output.scrollTop = output.scrollHeight;
+        },
+        () => {
+          // Parse into day cards
+          const card = document.getElementById(cardId);
+          if (card) card.remove();
+          renderTravelCards(output, accumulated);
+          input.disabled = false;
+          sendBtn.disabled = false;
+          setLiveStatus(false);
+        },
+        (err) => {
+          output.innerHTML = `<div class="travel-placeholder" style="color:var(--accent)">⚠️ ${escapeHtml(err)}</div>`;
+          input.disabled = false;
+          sendBtn.disabled = false;
+          setLiveStatus(false);
+        }
+      );
+    }
+
+    function renderTravelCards(container, text) {
+      // Split on Day N patterns
+      const dayPattern = /(?=Day\s+\d+|DAY\s+\d+)/i;
+      const parts = text.split(dayPattern).filter(p => p.trim());
+
+      if (parts.length <= 1) {
+        // No day structure — just show as formatted text
+        container.innerHTML = `<div class="travel-streaming-card" style="white-space:pre-wrap;">${escapeHtml(text)}</div>`;
+        return;
+      }
+
+      let html = '';
+      parts.forEach((part, i) => {
+        const lines = part.trim().split('\n');
+        const header = lines[0].trim();
+        const body = lines.slice(1).join('\n').trim();
+        const icons = ['🗓️', '🌅', '🌞', '🌇', '🌙', '🧳', '🗺️'];
+        html += `
+          <div class="day-card" style="animation-delay:${i * 0.08}s">
+            <div class="day-card-header">${icons[i % icons.length]} ${escapeHtml(header)}</div>
+            <div class="day-card-body">${escapeHtml(body).replace(/\n/g, '<br>')}</div>
+          </div>`;
+      });
+      container.innerHTML = html;
+    }
+
+    // ---- STATUS ----
+    function setLiveStatus(running) {
+      ['live-status-dot'].forEach(id => {
+        const dot = document.getElementById(id);
+        if (dot) {
+          dot.classList.toggle('running', running);
+          dot.classList.toggle('ready', !running);
+        }
+      });
     }
 
     // ---- LAUNCH ----
+    function goToLaunch() {
+      const proj = projects[selectedProject];
+      document.getElementById('launch-desc').textContent =
+        hasRunLive
+          ? `That response you just saw? That was your code calling Claude's API live. You're officially a builder.`
+          : `Your ${proj.name} is ready. Go back and try it live — or keep going and see your full project.`;
+      document.getElementById('stat-lines').textContent = proj.lines;
+      document.getElementById('launch-emoji').textContent = proj.launchEmoji;
+
+      // Render live app on launch page too
+      document.getElementById('launch-live-label').textContent = proj.liveLabel;
+      renderLiveApp('launch-live-ui', selectedProject);
+
+      goToStep(6);
+    }
+
+    // ---- CODE MODAL ----
     function showFullCode() {
       const proj = projects[selectedProject];
       const code = proj.fullCode(customPrompt);
+      document.getElementById('code-modal-filename').textContent = proj.filename;
+      document.getElementById('code-modal-content').textContent = code;
+      document.getElementById('code-modal').classList.add('visible');
+    }
 
-      // Create a simple modal with the full code
-      const overlay = document.createElement('div');
-      overlay.className = 'tooltip-overlay visible';
-      overlay.style.cssText = 'display:flex; align-items:center; justify-content:center;';
-      overlay.onclick = function(e) { if(e.target===this) this.remove(); };
-
-      overlay.innerHTML = `
-        <div style="background:#1E1A14; border-radius:16px; max-width:640px; width:92%; max-height:80vh; overflow:auto; box-shadow:0 16px 48px rgba(0,0,0,0.3);">
-          <div style="padding:12px 20px; background:#161210; border-bottom:1px solid #2A251E; display:flex; justify-content:space-between; align-items:center; position:sticky;top:0;">
-            <span style="font-family:var(--mono);font-size:12px;color:#8A7E6F;">${proj.filename}</span>
-            <button onclick="this.closest('.tooltip-overlay').remove()" style="background:none;border:none;color:#8A7E6F;cursor:pointer;font-size:18px;padding:4px 8px;">&times;</button>
-          </div>
-          <pre style="padding:20px; font-family:var(--mono); font-size:13px; color:#E8DFD3; line-height:1.8; margin:0; white-space:pre-wrap;">${escapeHtml(code)}</pre>
-        </div>
-      `;
-      document.body.appendChild(overlay);
+    function closeCodeModal() {
+      document.getElementById('code-modal').classList.remove('visible');
     }
 
     function copyCode() {
@@ -1388,23 +1841,30 @@ while True:
       const code = proj.fullCode(customPrompt);
       navigator.clipboard.writeText(code).then(() => {
         const btn = event.target.closest('.btn');
-        const origText = btn.innerHTML;
+        const origHTML = btn.innerHTML;
         btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 8l3 3 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg> Copied!';
-        setTimeout(() => { btn.innerHTML = origText; }, 2000);
+        setTimeout(() => { btn.innerHTML = origHTML; }, 2000);
       });
     }
 
     // ---- UTILS ----
     function escapeHtml(str) {
-      return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
     }
     function escapeAttr(str) {
-      return str.replace(/'/g, "\\'").replace(/"/g, '\\"');
+      return String(str).replace(/'/g, "\\'").replace(/"/g, '\\"');
     }
 
     // ---- KEYBOARD ----
     document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') closeTooltip();
+      if (e.key === 'Escape') {
+        closeTooltip();
+        closeCodeModal();
+      }
       if (e.key === 'Enter' && document.getElementById('tooltip-overlay').classList.contains('visible')) {
         applyTooltip();
       }
