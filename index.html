@@ -835,6 +835,40 @@
       .summarizer-right { height: 200px; }
       .launch-bottom { grid-template-columns: 1fr; }
     }
+
+    /* ---- CC Interactive Input ---- */
+    .cc-input-row { display: flex; align-items: center; gap: 8px; padding: 10px 16px; border-top: 1px solid #1e1e2a; margin-top: auto; }
+    .cc-input-chevron { color: #e86f2a; font-family: var(--mono); font-size: 14px; font-weight: 700; flex-shrink: 0; }
+    .cc-prompt-field { flex: 1; background: none; border: none; outline: none; color: #e0e0f0; font-family: var(--mono); font-size: 12.5px; caret-color: #e86f2a; }
+    .cc-prompt-field::placeholder { color: #3a3a55; }
+    .cc-submit-btn { background: none; border: 1px solid #2a2a40; border-radius: 4px; color: #3a3a55; font-size: 10px; padding: 3px 8px; cursor: pointer; font-family: var(--mono); transition: all 0.15s; flex-shrink: 0; }
+    .cc-submit-btn:hover { border-color: #e86f2a; color: #e86f2a; }
+
+    /* CC Thinking row */
+    .cc-thinking-row { color: #3a3a55; font-family: var(--mono); font-size: 11.5px; display: flex; align-items: center; gap: 6px; padding: 4px 0; }
+    .cc-thinking-dots span { animation: ccBlink 1.2s infinite; opacity: 0; }
+    .cc-thinking-dots span:nth-child(2) { animation-delay: 0.4s; }
+    .cc-thinking-dots span:nth-child(3) { animation-delay: 0.8s; }
+    @keyframes ccBlink { 0%,100%{opacity:0} 50%{opacity:1} }
+
+    /* CC Nudge block (rejected prompt) */
+    .cc-nudge-block { background: #13131c; border: 1px solid #2a2a3e; border-radius: 8px; padding: 12px 14px; display: flex; flex-direction: column; gap: 8px; margin-top: 8px; }
+    .cc-nudge-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: #3a3a55; font-family: var(--mono); font-weight: 600; }
+    .cc-nudge-theirs { color: #4a4a5a; font-family: var(--mono); font-size: 12px; text-decoration: line-through; }
+    .cc-nudge-suggested { color: #f0a870; font-family: var(--mono); font-size: 12px; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+    .cc-nudge-suggested:hover { color: #e86f2a; }
+    .cc-nudge-reason { color: #6060a0; font-size: 12px; line-height: 1.5; }
+
+    /* CC session item entrance animation */
+    .cc-item-enter { animation: ccFadeIn 0.3s ease forwards; opacity: 0; }
+    @keyframes ccFadeIn { from{opacity:0;transform:translateY(4px)} to{opacity:1;transform:translateY(0)} }
+
+    /* Next button unlock pulse */
+    @keyframes unlockPulse { 0%,100%{box-shadow:0 0 0 0 rgba(232,111,42,0.4)} 50%{box-shadow:0 0 0 8px rgba(232,111,42,0)} }
+    .btn-unlocked { animation: unlockPulse 0.6s ease 1; }
+
+    /* Disabled next button */
+    .btn[disabled] { opacity: 0.35; cursor: not-allowed; pointer-events: none; }
   </style>
 </head>
 <body>
@@ -1050,7 +1084,7 @@
               <div class="build-tip-label">What's happening</div>
               <p id="build1-tip">The first two lines are like plugging in your appliances before cooking. We're connecting to the Claude API so our code can talk to AI.</p>
             </div>
-            <button class="btn btn-primary" onclick="goToStep(4)">
+            <button id="build1-next" class="btn btn-primary" onclick="goToStep(4)" disabled>
               Next step
               <svg viewBox="0 0 16 16" fill="none"><path d="M3 8h10m-4-4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </button>
@@ -1081,7 +1115,7 @@
               <div class="build-tip-label">Try changing it</div>
               <p id="build2-tip">See the highlighted line? That's the prompt — the instruction you give to AI. Click it to customize what your AI assistant says.</p>
             </div>
-            <button class="btn btn-primary" onclick="goToStep(5)">
+            <button id="build2-next" class="btn btn-primary" onclick="goToStep(5)" disabled>
               Next step
               <svg viewBox="0 0 16 16" fill="none"><path d="M3 8h10m-4-4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </button>
@@ -1274,6 +1308,12 @@
     let unlockedConcepts = new Set();
     let customPrompt = null;
     let hasRunLive = false;
+    let build1Approved = false;
+    let build2Approved = false;
+    let build1UserPrompt = null;
+    let build2UserPrompt = null;
+    let storedSession1 = null;
+    let storedSession2 = null;
 
     const stepLabels = ['Welcome', 'Learn', 'Choose', 'Build 1/3', 'Build 2/3', 'Build 3/3', 'Launch'];
 
@@ -1290,7 +1330,7 @@
         launchEmoji: '📓',
         build1: {
           desc: 'Every project starts by importing the tools it needs and setting up the connection to Claude\'s AI.',
-          tip: 'The first two lines are like plugging in your appliances before cooking. We\'re connecting to the Claude API so our code can talk to AI.',
+          tip: 'Tell Claude Code exactly what to create. Name the file and what it connects to — specifics get better results.',
           ccSession: [
             { type: 'user', text: 'create journal.js and connect it to the Claude API' },
             { type: 'tool', verb: '✎ Creating', file: 'journal.js', diffs: [
@@ -1304,7 +1344,7 @@
         build2: {
           title: 'The brain of your journal',
           desc: 'This function takes your journal entry, sends it to Claude with a thoughtful prompt, and returns a warm reflection.',
-          tip: 'See the highlighted line? That\'s the prompt — the personality of your AI buddy. Click it to customize what kind of reflections you get.',
+          tip: 'Describe the function by name and what it does. The more specific you are, the better the code Claude writes.',
           defaultPrompt: 'You are a warm, thoughtful journal companion. Read this entry and offer a gentle reflection — notice patterns, ask one follow-up question, and end with encouragement.',
           ccSession: function(prompt) {
             const p = prompt || this.defaultPrompt;
@@ -1349,7 +1389,7 @@
         launchEmoji: '✂️',
         build1: {
           desc: 'We start by connecting to the Claude API — the bridge between your code and AI.',
-          tip: 'Just like before: import the tools, create the connection. Every AI project starts this same way.',
+          tip: 'Tell Claude Code exactly what to create. Name the file and what it connects to — specifics get better results.',
           ccSession: [
             { type: 'user', text: 'create summarizer.js and connect it to the Claude API' },
             { type: 'tool', verb: '✎ Creating', file: 'summarizer.js', diffs: [
@@ -1363,7 +1403,7 @@
         build2: {
           title: 'The summarization engine',
           desc: 'This function takes any text and asks Claude to distill it into clean, scannable bullet points.',
-          tip: 'The highlighted prompt controls the output format. Want numbered points instead? A one-sentence summary? Click to change it.',
+          tip: 'Describe the function by name and what it does. The more specific you are, the better the code Claude writes.',
           defaultPrompt: 'Summarize the following text into 3-5 concise bullet points. Focus on key facts and takeaways. Be clear and specific.',
           ccSession: function(prompt) {
             const p = prompt || this.defaultPrompt;
@@ -1408,7 +1448,7 @@
         launchEmoji: '✈️',
         build1: {
           desc: 'Same start as before — connect to Claude. This time we\'ll also set up a system prompt that gives Claude a travel-expert personality.',
-          tip: 'We\'re giving Claude a "role" right from the start. Think of it like briefing a travel agent before they plan your trip.',
+          tip: 'Tell Claude Code exactly what to create. Name the file and what it connects to — specifics get better results.',
           ccSession: [
             { type: 'user', text: 'create travel.js and connect it to the Claude API' },
             { type: 'tool', verb: '✎ Creating', file: 'travel.js', diffs: [
@@ -1422,7 +1462,7 @@
         build2: {
           title: 'Your personal travel agent',
           desc: 'This function takes a trip description and returns a detailed day-by-day itinerary with local recommendations.',
-          tip: 'The highlighted prompt shapes the entire trip plan. Want budget tips? Food-focused? Adventure-heavy? Click to customize the travel style.',
+          tip: 'Describe the function by name and what it does. The more specific you are, the better the code Claude writes.',
           defaultPrompt: 'You are an experienced travel planner. Create a detailed day-by-day itinerary based on the user\'s description. Include specific restaurant and activity recommendations, local tips, and estimated costs. Keep it practical and exciting.',
           ccSession: function(prompt) {
             const p = prompt || this.defaultPrompt;
@@ -1468,7 +1508,7 @@
         liveSystemPrompt: 'You are a helpful AI assistant. Be friendly, concise, and helpful.',
         build1: {
           desc: 'Every Claude Code project starts the same way — connect to the API and you\'re ready to build anything.',
-          tip: 'These three lines are the foundation of every AI app. Once the client is connected, Claude is at your disposal.',
+          tip: 'Tell Claude Code exactly what to create. Name the file and what it connects to — specifics get better results.',
           ccSession: [
             { type: 'user', text: 'create app.js with a Claude API connection' },
             { type: 'tool', verb: '✎ Creating', file: 'app.js', diffs: [
@@ -1482,7 +1522,7 @@
         build2: {
           title: 'Your AI logic',
           desc: 'The core function that sends user input to Claude and returns a response. This is the engine of your app.',
-          tip: 'The highlighted prompt is the personality of your app. Make it specific — the more focused the prompt, the smarter the app feels.',
+          tip: 'Describe the function by name and what it does. The more specific you are, the better the code Claude writes.',
           defaultPrompt: 'You are a helpful AI assistant. Be friendly, concise, and helpful.',
           ccSession: function(prompt) {
             const p = prompt || this.defaultPrompt;
@@ -1548,6 +1588,12 @@
       selectedProject = id;
       customPrompt = null;
       hasRunLive = false;
+      build1Approved = false;
+      build2Approved = false;
+      build1UserPrompt = null;
+      build2UserPrompt = null;
+      storedSession1 = null;
+      storedSession2 = null;
       document.querySelectorAll('.project-option').forEach(o => o.classList.remove('selected'));
       document.querySelector(`.project-option[data-project="${id}"]`).classList.add('selected');
       const btn = document.getElementById('picker-next');
@@ -1598,17 +1644,204 @@
       container.innerHTML = html;
     }
 
+    // ---- INTERACTIVE CC INPUT ----
+
+    // Renders CC window in interactive input mode (user types their prompt)
+    function renderCCInput(containerId, step) {
+      const container = document.getElementById(containerId);
+      if (!container) return;
+      const placeholder = step === 3
+        ? 'e.g. create journal.js and connect to Anthropic SDK'
+        : 'e.g. add a reflect() function that takes a journal entry';
+      container.innerHTML = `
+        <div class="cc-session-wrapper" style="display:flex;flex-direction:column;height:100%;">
+          <div class="cc-toolbar">
+            <div class="cc-dots"><span></span><span></span><span></span></div>
+            <span class="cc-title">Claude Code</span>
+          </div>
+          <div class="cc-body" id="${containerId}-body" style="flex:1;min-height:100px;"></div>
+          <div class="cc-input-row" id="${containerId}-input-row">
+            <span class="cc-input-chevron">&gt;</span>
+            <input type="text" class="cc-prompt-field" id="${containerId}-input"
+              placeholder="${placeholder}"
+              onkeydown="if(event.key==='Enter')submitCCPrompt(${step})">
+            <button class="cc-submit-btn" onclick="submitCCPrompt(${step})">&#8629;</button>
+          </div>
+        </div>`;
+      setTimeout(() => {
+        const inp = document.getElementById(`${containerId}-input`);
+        if (inp) inp.focus();
+      }, 80);
+    }
+
+    // Reads input, shows thinking state, calls /api/evaluate
+    async function submitCCPrompt(step) {
+      const containerId = step === 3 ? 'build1-cc' : 'build2-cc';
+      const input = document.getElementById(`${containerId}-input`);
+      const userPrompt = input ? input.value.trim() : '';
+      if (!userPrompt) { if (input) input.focus(); return; }
+
+      const body = document.getElementById(`${containerId}-body`);
+      const inputRow = document.getElementById(`${containerId}-input-row`);
+
+      // Append user prompt row
+      const userRow = document.createElement('div');
+      userRow.className = 'cc-user-row';
+      userRow.innerHTML = `<span class="cc-chevron">&gt;</span><span class="cc-user-text">${escapeHtml(userPrompt)}</span>`;
+      body.appendChild(userRow);
+
+      // Append thinking row
+      const thinkingRow = document.createElement('div');
+      thinkingRow.className = 'cc-thinking-row';
+      thinkingRow.id = `${containerId}-thinking`;
+      thinkingRow.innerHTML = `<span style="color:#3a3a55;font-family:var(--mono)">evaluating</span><span class="cc-thinking-dots"><span>.</span><span>.</span><span>.</span></span>`;
+      body.appendChild(thinkingRow);
+
+      // Hide input row while evaluating
+      if (inputRow) inputRow.style.display = 'none';
+
+      try {
+        const proj = projects[selectedProject];
+        const resp = await fetch('/api/evaluate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ userPrompt, step, project: selectedProject, projectName: proj ? proj.name : '' }),
+        });
+        const result = await resp.json();
+        handleEvalResult(step, userPrompt, result);
+      } catch (err) {
+        // Network error — restore input
+        if (thinkingRow) thinkingRow.remove();
+        if (inputRow) inputRow.style.display = '';
+        if (input) { input.value = userPrompt; input.focus(); }
+      }
+    }
+
+    // Handles the evaluation response — approved or rejected
+    function handleEvalResult(step, userPrompt, result) {
+      const containerId = step === 3 ? 'build1-cc' : 'build2-cc';
+      const body = document.getElementById(`${containerId}-body`);
+      const thinkingRow = document.getElementById(`${containerId}-thinking`);
+      const inputRow = document.getElementById(`${containerId}-input-row`);
+      const proj = projects[selectedProject];
+
+      if (result.approved) {
+        if (thinkingRow) thinkingRow.remove();
+
+        // Build stored session using user's typed text as the user row
+        let sessionItems;
+        if (step === 3) {
+          build1UserPrompt = userPrompt;
+          sessionItems = proj.build1.ccSession.slice(1); // skip data's user row
+          storedSession1 = [{ type: 'user', text: userPrompt }, ...sessionItems];
+        } else {
+          build2UserPrompt = userPrompt;
+          if (result.extractedPrompt) customPrompt = result.extractedPrompt;
+          const fullSession = proj.build2.ccSession(customPrompt || proj.build2.defaultPrompt);
+          sessionItems = fullSession.slice(1);
+          storedSession2 = [{ type: 'user', text: userPrompt }, ...sessionItems];
+        }
+
+        // Animate session items in
+        playSession(containerId, sessionItems);
+
+        // Unlock the Next step button with a pulse
+        const nextId = step === 3 ? 'build1-next' : 'build2-next';
+        const nextBtn = document.getElementById(nextId);
+        if (nextBtn) {
+          nextBtn.disabled = false;
+          nextBtn.classList.add('btn-unlocked');
+          setTimeout(() => nextBtn.classList.remove('btn-unlocked'), 700);
+        }
+
+        if (step === 3) build1Approved = true;
+        else build2Approved = true;
+
+      } else {
+        // Rejected: show nudge block
+        if (thinkingRow) thinkingRow.remove();
+
+        const suggestion = result.suggestion || 'be more specific about what to build';
+        const explanation = result.explanation || 'Add more detail about the file and function names.';
+
+        const nudgeWrap = document.createElement('div');
+        nudgeWrap.innerHTML = `
+          <div class="cc-nudge-block">
+            <div class="cc-nudge-label">Try something more specific:</div>
+            <div class="cc-nudge-theirs">${escapeHtml(userPrompt)}</div>
+            <div class="cc-nudge-suggested" onclick="prefillAndFocus(${step}, this.getAttribute('data-text'))" data-text="${escapeAttr(suggestion)}">${escapeHtml(suggestion)}</div>
+            <div class="cc-nudge-reason">${escapeHtml(explanation)}</div>
+          </div>`;
+        body.appendChild(nudgeWrap);
+
+        // Re-show input, pre-filled
+        if (inputRow) {
+          inputRow.style.display = '';
+          const inp = document.getElementById(`${containerId}-input`);
+          if (inp) { inp.value = userPrompt; inp.focus(); inp.select(); }
+        }
+      }
+    }
+
+    // Appends session items into cc-body with staggered entrance animation
+    function playSession(containerId, items) {
+      const body = document.getElementById(`${containerId}-body`);
+      if (!body) return;
+      items.forEach((item, i) => {
+        setTimeout(() => {
+          const el = document.createElement('div');
+          el.className = 'cc-item-enter';
+          if (item.type === 'user') {
+            el.classList.add('cc-user-row');
+            el.innerHTML = `<span class="cc-chevron">&gt;</span><span class="cc-user-text">${escapeHtml(item.text)}</span>`;
+          } else if (item.type === 'tool') {
+            el.classList.add('cc-tool-block');
+            let diffs = '';
+            for (const d of item.diffs) {
+              const rc = d.add ? 'add' : '';
+              const sign = d.add ? '+' : '&nbsp;';
+              diffs += `<div class="cc-diff-row ${rc}"><span class="cc-sign">${sign}</span><span class="cc-code">${d.code}</span></div>`;
+            }
+            el.innerHTML = `<div class="cc-tool-header"><span class="cc-tool-verb">${escapeHtml(item.verb)}</span><span class="cc-tool-file">${escapeHtml(item.file)}</span></div><div class="cc-diff-area">${diffs}</div>`;
+          } else if (item.type === 'done') {
+            el.classList.add('cc-done-row');
+            el.innerHTML = `&#10003; ${escapeHtml(item.text)}`;
+          }
+          body.appendChild(el);
+        }, i * 380);
+      });
+    }
+
+    // Pre-fills the input field with the suggested prompt text
+    function prefillAndFocus(step, text) {
+      const containerId = step === 3 ? 'build1-cc' : 'build2-cc';
+      const inp = document.getElementById(`${containerId}-input`);
+      if (inp) { inp.value = text; inp.focus(); inp.setSelectionRange(text.length, text.length); }
+    }
+
     function populateBuildStep(step) {
       const proj = projects[selectedProject];
       if (step === 3) {
         document.getElementById('build1-desc').textContent = proj.build1.desc;
         document.getElementById('build1-tip').textContent = proj.build1.tip;
-        renderCCSession('build1-cc', proj.build1.ccSession);
+        if (build1Approved && storedSession1) {
+          renderCCSession('build1-cc', storedSession1);
+          const nb = document.getElementById('build1-next');
+          if (nb) nb.disabled = false;
+        } else {
+          renderCCInput('build1-cc', 3);
+        }
       } else if (step === 4) {
         document.getElementById('build2-title').textContent = proj.build2.title;
         document.getElementById('build2-desc').textContent = proj.build2.desc;
         document.getElementById('build2-tip').textContent = proj.build2.tip;
-        renderCCSession('build2-cc', proj.build2.ccSession(customPrompt));
+        if (build2Approved && storedSession2) {
+          renderCCSession('build2-cc', storedSession2);
+          const nb = document.getElementById('build2-next');
+          if (nb) nb.disabled = false;
+        } else {
+          renderCCInput('build2-cc', 4);
+        }
       } else if (step === 5) {
         document.getElementById('build3-desc').textContent = proj.build3.desc;
         document.getElementById('build3-tip').textContent = proj.build3.tip;
