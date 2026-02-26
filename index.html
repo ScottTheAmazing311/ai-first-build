@@ -1,0 +1,1414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>First Build — Your AI Project Launchpad</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #FFFCF7;
+      --surface: #FFFFFF;
+      --surface-alt: #FFF8EF;
+      --border: #F0E8DD;
+      --border-strong: #E0D5C8;
+      --text: #2D2416;
+      --text-secondary: #7A6E5D;
+      --text-tertiary: #A99E8F;
+      --accent: #E86F2A;
+      --accent-light: #FFF0E6;
+      --accent-dark: #C55A1E;
+      --success: #2D8A56;
+      --success-light: #E8F5EE;
+      --info: #4A7FD4;
+      --info-light: #EBF1FC;
+      --purple: #7C5CBF;
+      --purple-light: #F3EEFB;
+      --radius: 12px;
+      --radius-sm: 8px;
+      --radius-lg: 20px;
+      --shadow-sm: 0 1px 3px rgba(45,36,22,0.06);
+      --shadow-md: 0 4px 16px rgba(45,36,22,0.08);
+      --shadow-lg: 0 8px 32px rgba(45,36,22,0.1);
+      --mono: 'DM Mono', monospace;
+      --sans: 'DM Sans', system-ui, sans-serif;
+    }
+
+    body {
+      font-family: var(--sans);
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ---- Top Bar ---- */
+    .topbar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      background: rgba(255,252,247,0.85);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 32px;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .topbar-brand {
+      font-weight: 700; font-size: 15px; letter-spacing: -0.02em;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .topbar-brand span { color: var(--accent); }
+    .topbar-progress {
+      display: flex; align-items: center; gap: 6px;
+    }
+    .topbar-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--border);
+      transition: all 0.4s ease;
+    }
+    .topbar-dot.active { background: var(--accent); transform: scale(1.25); }
+    .topbar-dot.done { background: var(--success); }
+    .topbar-step-label {
+      font-size: 12px; color: var(--text-tertiary); margin-left: 8px;
+      font-weight: 500; letter-spacing: 0.03em; text-transform: uppercase;
+    }
+
+    /* ---- Step Container ---- */
+    .step-container {
+      margin-top: 56px;
+      min-height: calc(100vh - 56px);
+      display: flex;
+      flex-direction: column;
+    }
+    .step {
+      display: none;
+      flex: 1;
+      animation: fadeUp 0.5s ease;
+    }
+    .step.active { display: flex; flex-direction: column; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ---- Welcome (Step 0) ---- */
+    .welcome {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 40px 24px;
+      max-width: 640px;
+      margin: 0 auto;
+    }
+    .welcome-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: var(--accent-light); color: var(--accent);
+      font-size: 13px; font-weight: 600;
+      padding: 6px 14px; border-radius: 100px;
+      margin-bottom: 24px;
+    }
+    .welcome h1 {
+      font-size: clamp(32px, 5vw, 48px);
+      font-weight: 700; letter-spacing: -0.03em;
+      line-height: 1.15; margin-bottom: 16px;
+    }
+    .welcome h1 em {
+      font-style: normal;
+      background: linear-gradient(135deg, var(--accent), var(--purple));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .welcome p {
+      font-size: 17px; color: var(--text-secondary);
+      max-width: 480px; margin-bottom: 32px;
+    }
+    .welcome-reassurance {
+      display: flex; gap: 24px; margin-bottom: 40px;
+      flex-wrap: wrap; justify-content: center;
+    }
+    .welcome-reassurance span {
+      font-size: 13px; color: var(--text-tertiary);
+      display: flex; align-items: center; gap: 6px;
+    }
+    .welcome-reassurance .check {
+      width: 18px; height: 18px; border-radius: 50%;
+      background: var(--success-light); color: var(--success);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 700;
+    }
+
+    /* ---- Buttons ---- */
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 14px 28px; border-radius: 100px;
+      font-family: var(--sans); font-size: 15px; font-weight: 600;
+      border: none; cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .btn-primary {
+      background: var(--accent); color: #fff;
+    }
+    .btn-primary:hover { background: var(--accent-dark); transform: translateY(-1px); box-shadow: var(--shadow-md); }
+    .btn-secondary {
+      background: var(--surface); color: var(--text);
+      border: 1px solid var(--border-strong);
+    }
+    .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+    .btn-ghost {
+      background: transparent; color: var(--text-secondary);
+      padding: 10px 16px;
+    }
+    .btn-ghost:hover { color: var(--accent); }
+    .btn-row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+    .btn svg { width: 16px; height: 16px; }
+
+    /* ---- Concepts (Step 1) ---- */
+    .concepts-page {
+      flex: 1; padding: 48px 24px;
+      max-width: 800px; margin: 0 auto; width: 100%;
+    }
+    .concepts-page h2 {
+      font-size: 28px; font-weight: 700; letter-spacing: -0.02em;
+      margin-bottom: 6px;
+    }
+    .concepts-page > p {
+      color: var(--text-secondary); font-size: 15px; margin-bottom: 32px;
+    }
+    .concept-cards {
+      display: flex; flex-direction: column; gap: 16px;
+      margin-bottom: 40px;
+    }
+    .concept-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+    .concept-card:hover { border-color: var(--border-strong); box-shadow: var(--shadow-sm); }
+    .concept-card.expanded { border-color: var(--accent); box-shadow: var(--shadow-md); }
+    .concept-header {
+      padding: 20px 24px;
+      display: flex; align-items: center; gap: 16px;
+    }
+    .concept-icon {
+      width: 44px; height: 44px; border-radius: var(--radius-sm);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px; flex-shrink: 0;
+    }
+    .concept-icon.prompt { background: var(--accent-light); }
+    .concept-icon.api { background: var(--info-light); }
+    .concept-icon.function { background: var(--purple-light); }
+    .concept-meta { flex: 1; }
+    .concept-meta h3 { font-size: 16px; font-weight: 600; margin-bottom: 2px; }
+    .concept-meta p { font-size: 13px; color: var(--text-secondary); }
+    .concept-toggle {
+      width: 28px; height: 28px; border-radius: 50%;
+      background: var(--surface-alt); border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; color: var(--text-tertiary);
+      transition: all 0.2s ease;
+    }
+    .concept-card.expanded .concept-toggle { background: var(--accent); color: #fff; border-color: var(--accent); transform: rotate(180deg); }
+    .concept-body {
+      max-height: 0; overflow: hidden;
+      transition: max-height 0.4s ease;
+    }
+    .concept-card.expanded .concept-body { max-height: 600px; }
+    .concept-body-inner {
+      padding: 0 24px 24px;
+      border-top: 1px solid var(--border);
+      padding-top: 20px;
+    }
+    .concept-analogy {
+      background: var(--surface-alt);
+      border-radius: var(--radius-sm);
+      padding: 16px 20px;
+      margin-bottom: 16px;
+    }
+    .concept-analogy-label {
+      font-size: 11px; font-weight: 600; text-transform: uppercase;
+      letter-spacing: 0.06em; color: var(--accent); margin-bottom: 6px;
+    }
+    .concept-analogy p { font-size: 14px; color: var(--text-secondary); }
+    .concept-code {
+      background: #1E1A14;
+      color: #E8DFD3;
+      font-family: var(--mono);
+      font-size: 13px;
+      padding: 16px 20px;
+      border-radius: var(--radius-sm);
+      overflow-x: auto;
+      line-height: 1.7;
+    }
+    .concept-code .comment { color: #6B6257; }
+    .concept-code .keyword { color: #E8975B; }
+    .concept-code .string { color: #8BC492; }
+    .concept-code .fn { color: #9BADF0; }
+    .concept-unlock {
+      display: flex; align-items: center; gap: 8px;
+      margin-top: 16px; font-size: 13px; color: var(--success); font-weight: 500;
+    }
+
+    /* ---- Project Picker (Step 2) ---- */
+    .picker-page {
+      flex: 1; padding: 48px 24px;
+      max-width: 860px; margin: 0 auto; width: 100%;
+    }
+    .picker-page h2 {
+      font-size: 28px; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 6px;
+    }
+    .picker-page > p { color: var(--text-secondary); font-size: 15px; margin-bottom: 32px; }
+    .project-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px; margin-bottom: 40px;
+    }
+    .project-option {
+      background: var(--surface);
+      border: 2px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px 24px;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      position: relative;
+    }
+    .project-option:hover { border-color: var(--border-strong); transform: translateY(-2px); box-shadow: var(--shadow-md); }
+    .project-option.selected { border-color: var(--accent); background: var(--accent-light); }
+    .project-option .emoji { font-size: 32px; margin-bottom: 16px; display: block; }
+    .project-option h3 { font-size: 17px; font-weight: 600; margin-bottom: 6px; }
+    .project-option p { font-size: 13px; color: var(--text-secondary); margin-bottom: 16px; }
+    .project-tag {
+      display: inline-block; font-size: 11px; font-weight: 600;
+      padding: 3px 10px; border-radius: 100px;
+      text-transform: uppercase; letter-spacing: 0.04em;
+    }
+    .tag-easy { background: var(--success-light); color: var(--success); }
+    .tag-medium { background: var(--info-light); color: var(--info); }
+    .project-selected-badge {
+      position: absolute; top: 12px; right: 12px;
+      width: 24px; height: 24px; border-radius: 50%;
+      background: var(--accent); color: #fff;
+      display: none; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 700;
+    }
+    .project-option.selected .project-selected-badge { display: flex; }
+
+    /* ---- Build Steps (Step 3-5) ---- */
+    .build-page {
+      flex: 1; display: flex; flex-direction: column;
+      max-width: 960px; margin: 0 auto; width: 100%;
+      padding: 32px 24px;
+    }
+    .build-header {
+      display: flex; align-items: center; gap: 16px; margin-bottom: 32px;
+    }
+    .build-step-indicator {
+      display: flex; align-items: center; gap: 4px;
+    }
+    .build-step-pip {
+      width: 32px; height: 4px; border-radius: 2px;
+      background: var(--border);
+      transition: background 0.3s ease;
+    }
+    .build-step-pip.active { background: var(--accent); }
+    .build-step-pip.done { background: var(--success); }
+    .build-step-label {
+      font-size: 13px; color: var(--text-secondary); font-weight: 500;
+      margin-left: 12px;
+    }
+    .build-content { flex: 1; display: flex; gap: 24px; }
+    .build-explanation {
+      flex: 0 0 320px;
+      position: sticky; top: 96px; align-self: flex-start;
+    }
+    .build-explanation h3 { font-size: 20px; font-weight: 700; margin-bottom: 8px; letter-spacing: -0.01em; }
+    .build-explanation p { font-size: 14px; color: var(--text-secondary); margin-bottom: 16px; }
+    .build-tip {
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 14px 16px;
+      margin-bottom: 16px;
+    }
+    .build-tip-label {
+      font-size: 11px; font-weight: 600; text-transform: uppercase;
+      letter-spacing: 0.06em; color: var(--accent); margin-bottom: 4px;
+    }
+    .build-tip p { font-size: 13px; color: var(--text-secondary); }
+    .build-editor { flex: 1; min-width: 0; }
+
+    .editor-wrapper {
+      background: #1E1A14;
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow-lg);
+    }
+    .editor-toolbar {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 10px 16px;
+      background: #161210;
+      border-bottom: 1px solid #2A251E;
+    }
+    .editor-filename {
+      font-family: var(--mono); font-size: 12px; color: #8A7E6F;
+    }
+    .editor-dots {
+      display: flex; gap: 6px;
+    }
+    .editor-dots span {
+      width: 10px; height: 10px; border-radius: 50%;
+    }
+    .editor-dots span:nth-child(1) { background: #E85D4A; }
+    .editor-dots span:nth-child(2) { background: #E8C44A; }
+    .editor-dots span:nth-child(3) { background: #4AE870; }
+
+    .editor-body {
+      padding: 20px;
+      font-family: var(--mono);
+      font-size: 13px;
+      color: #E8DFD3;
+      line-height: 1.8;
+      min-height: 300px;
+      overflow-x: auto;
+    }
+    .editor-body .line {
+      display: flex; gap: 16px;
+    }
+    .editor-body .line-num {
+      color: #4A4438; user-select: none; text-align: right; min-width: 20px;
+    }
+    .editor-body .line-content { flex: 1; white-space: pre; }
+    .editor-body .comment { color: #6B6257; }
+    .editor-body .keyword { color: #E8975B; }
+    .editor-body .string { color: #8BC492; }
+    .editor-body .fn { color: #9BADF0; }
+    .editor-body .var { color: #E8DFD3; }
+    .editor-body .prop { color: #D4A96A; }
+    .editor-body .punct { color: #8A7E6F; }
+
+    .editor-body .editable-line {
+      background: rgba(232,111,42,0.08);
+      border-left: 2px solid var(--accent);
+      margin-left: -12px; padding-left: 10px;
+      border-radius: 2px;
+      cursor: pointer;
+      position: relative;
+    }
+    .editor-body .editable-line:hover {
+      background: rgba(232,111,42,0.15);
+    }
+    .editable-badge {
+      position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
+      font-family: var(--sans);
+      font-size: 10px; font-weight: 600;
+      background: var(--accent); color: #fff;
+      padding: 2px 8px; border-radius: 100px;
+      opacity: 0; transition: opacity 0.2s;
+    }
+    .editable-line:hover .editable-badge { opacity: 1; }
+
+    /* ---- Tooltip ---- */
+    .tooltip-overlay {
+      display: none;
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(45,36,22,0.3);
+      backdrop-filter: blur(4px);
+      z-index: 200;
+      align-items: center; justify-content: center;
+    }
+    .tooltip-overlay.visible { display: flex; }
+    .tooltip-card {
+      background: var(--surface);
+      border-radius: var(--radius-lg);
+      padding: 32px;
+      max-width: 480px; width: 90%;
+      box-shadow: var(--shadow-lg);
+      animation: fadeUp 0.3s ease;
+    }
+    .tooltip-card h4 {
+      font-size: 18px; font-weight: 700; margin-bottom: 8px;
+    }
+    .tooltip-card p {
+      font-size: 14px; color: var(--text-secondary); margin-bottom: 20px;
+    }
+    .tooltip-card input {
+      width: 100%;
+      padding: 12px 16px;
+      border: 2px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-family: var(--mono);
+      font-size: 14px;
+      background: var(--surface-alt);
+      color: var(--text);
+      margin-bottom: 16px;
+      transition: border-color 0.2s;
+    }
+    .tooltip-card input:focus { outline: none; border-color: var(--accent); }
+    .tooltip-actions { display: flex; gap: 10px; justify-content: flex-end; }
+
+    /* ---- Preview (Step 6) ---- */
+    .preview-page {
+      flex: 1; padding: 48px 24px;
+      max-width: 800px; margin: 0 auto; width: 100%;
+    }
+    .preview-page h2 { font-size: 28px; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 6px; }
+    .preview-page > p { color: var(--text-secondary); font-size: 15px; margin-bottom: 32px; }
+    .preview-full-code {
+      background: #1E1A14; border-radius: var(--radius);
+      overflow: hidden; margin-bottom: 32px;
+      box-shadow: var(--shadow-lg);
+    }
+    .preview-full-code .editor-toolbar { background: #161210; }
+    .preview-full-code pre {
+      padding: 24px;
+      font-family: var(--mono); font-size: 13px;
+      color: #E8DFD3; line-height: 1.8;
+      overflow-x: auto;
+    }
+
+    /* ---- Launch (Step 7) ---- */
+    .launch-page {
+      flex: 1; display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center; padding: 40px 24px;
+      max-width: 560px; margin: 0 auto;
+    }
+    .launch-celebration {
+      width: 96px; height: 96px; border-radius: 50%;
+      background: var(--success-light);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 44px; margin-bottom: 28px;
+      animation: pop 0.5s ease;
+    }
+    @keyframes pop {
+      0% { transform: scale(0); }
+      70% { transform: scale(1.15); }
+      100% { transform: scale(1); }
+    }
+    .launch-page h2 {
+      font-size: 32px; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 8px;
+    }
+    .launch-page > p { color: var(--text-secondary); font-size: 15px; margin-bottom: 32px; }
+    .launch-actions { display: flex; flex-direction: column; gap: 12px; width: 100%; max-width: 320px; }
+    .launch-actions .btn { width: 100%; justify-content: center; }
+    .launch-stats {
+      display: flex; gap: 32px; margin-top: 40px;
+      padding-top: 32px; border-top: 1px solid var(--border);
+    }
+    .launch-stat { text-align: center; }
+    .launch-stat .num { font-size: 28px; font-weight: 700; color: var(--accent); }
+    .launch-stat .label { font-size: 12px; color: var(--text-tertiary); margin-top: 2px; }
+
+    /* ---- Console ---- */
+    .console-panel {
+      background: #1E1A14;
+      border-radius: var(--radius);
+      overflow: hidden;
+      margin-bottom: 24px;
+      box-shadow: var(--shadow-lg);
+    }
+    .console-bar {
+      padding: 10px 16px;
+      background: #161210;
+      border-bottom: 1px solid #2A251E;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .console-bar .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--success); }
+    .console-bar span { font-family: var(--mono); font-size: 12px; color: #6B6257; }
+    .console-output {
+      padding: 16px 20px;
+      font-family: var(--mono); font-size: 13px;
+      color: #8BC492; line-height: 1.8;
+      min-height: 80px;
+    }
+    .console-output .prompt-char { color: var(--accent); }
+    .console-output .output { color: #E8DFD3; }
+    .console-typing::after {
+      content: '|'; animation: blink 0.8s infinite;
+    }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+    /* ---- Responsive ---- */
+    @media (max-width: 768px) {
+      .build-content { flex-direction: column; }
+      .build-explanation { flex: none; position: static; }
+      .welcome h1 { font-size: 28px; }
+      .launch-stats { gap: 20px; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Top Bar -->
+  <nav class="topbar">
+    <div class="topbar-brand">
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+        <rect width="18" height="18" rx="4" fill="#E86F2A"/>
+        <path d="M5 9h8M9 5v8" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+      <span>first</span>build
+    </div>
+    <div class="topbar-progress">
+      <div class="topbar-dot active" data-step="0"></div>
+      <div class="topbar-dot" data-step="1"></div>
+      <div class="topbar-dot" data-step="2"></div>
+      <div class="topbar-dot" data-step="3"></div>
+      <div class="topbar-dot" data-step="4"></div>
+      <div class="topbar-dot" data-step="5"></div>
+      <span class="topbar-step-label">Welcome</span>
+    </div>
+  </nav>
+
+  <div class="step-container">
+
+    <!-- STEP 0: Welcome -->
+    <section class="step active" data-step="0">
+      <div class="welcome">
+        <div class="welcome-badge">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.5"/><path d="M7 4v3l2 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          Takes about 10 minutes
+        </div>
+        <h1>Build your first <em>AI project</em> — no coding experience needed</h1>
+        <p>You already talk to AI every day. Now learn to build with it. We'll go from zero to a working project, one small step at a time.</p>
+        <div class="welcome-reassurance">
+          <span><span class="check">&#10003;</span> No installs needed</span>
+          <span><span class="check">&#10003;</span> Plain-English explanations</span>
+          <span><span class="check">&#10003;</span> You can't break anything</span>
+        </div>
+        <button class="btn btn-primary" onclick="goToStep(1)">
+          Let's start
+          <svg viewBox="0 0 16 16" fill="none"><path d="M3 8h10m-4-4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+    </section>
+
+    <!-- STEP 1: Concepts -->
+    <section class="step" data-step="1">
+      <div class="concepts-page">
+        <h2>Three ideas. That's all you need.</h2>
+        <p>Before we build, let's unlock three concepts. Click each card to learn more — no jargon, just plain English.</p>
+        <div class="concept-cards">
+
+          <!-- Prompt -->
+          <div class="concept-card" onclick="toggleConcept(this)" data-concept="prompt">
+            <div class="concept-header">
+              <div class="concept-icon prompt">&#128172;</div>
+              <div class="concept-meta">
+                <h3>Prompt</h3>
+                <p>The instruction you give to AI</p>
+              </div>
+              <div class="concept-toggle">&#9660;</div>
+            </div>
+            <div class="concept-body">
+              <div class="concept-body-inner">
+                <div class="concept-analogy">
+                  <div class="concept-analogy-label">Think of it like...</div>
+                  <p>A prompt is like placing an order at a restaurant. The more specific your order ("grilled salmon, medium, no sauce"), the better the result. Vague orders ("just bring me food") get unpredictable results.</p>
+                </div>
+                <div class="concept-code">
+                  <span class="comment">// A prompt is just text you send to AI</span><br>
+                  <span class="keyword">prompt</span> = <span class="string">"Summarize this article in 3 bullet points"</span>
+                </div>
+                <div class="concept-unlock">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/><path d="M5 8l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+                  Concept unlocked!
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- API -->
+          <div class="concept-card" onclick="toggleConcept(this)" data-concept="api">
+            <div class="concept-header">
+              <div class="concept-icon api">&#128268;</div>
+              <div class="concept-meta">
+                <h3>API</h3>
+                <p>How your code talks to AI</p>
+              </div>
+              <div class="concept-toggle">&#9660;</div>
+            </div>
+            <div class="concept-body">
+              <div class="concept-body-inner">
+                <div class="concept-analogy">
+                  <div class="concept-analogy-label">Think of it like...</div>
+                  <p>An API is like a waiter at a restaurant. You (your code) don't walk into the kitchen (Claude's brain). Instead, you hand your order to the waiter (the API), and they bring back the result.</p>
+                </div>
+                <div class="concept-code">
+                  <span class="comment">// You send a message, the API sends a reply</span><br>
+                  <span class="fn">response</span> = <span class="keyword">ask_claude</span>(<span class="string">"What's a fun weekend plan?"</span>)
+                </div>
+                <div class="concept-unlock">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/><path d="M5 8l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+                  Concept unlocked!
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Function -->
+          <div class="concept-card" onclick="toggleConcept(this)" data-concept="function">
+            <div class="concept-header">
+              <div class="concept-icon function">&#9881;&#65039;</div>
+              <div class="concept-meta">
+                <h3>Function</h3>
+                <p>A reusable set of instructions</p>
+              </div>
+              <div class="concept-toggle">&#9660;</div>
+            </div>
+            <div class="concept-body">
+              <div class="concept-body-inner">
+                <div class="concept-analogy">
+                  <div class="concept-analogy-label">Think of it like...</div>
+                  <p>A function is like a recipe card. You write the steps once ("make pancakes"), and then anytime you want pancakes, you just say "follow the pancake recipe" instead of reciting every step again.</p>
+                </div>
+                <div class="concept-code">
+                  <span class="comment">// Write once, use anywhere</span><br>
+                  <span class="keyword">function</span> <span class="fn">summarize</span>(text) {<br>
+                  &nbsp;&nbsp;<span class="keyword">return</span> <span class="fn">ask_claude</span>(<span class="string">`Summarize: ${text}`</span>)<br>
+                  }
+                </div>
+                <div class="concept-unlock">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/><path d="M5 8l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+                  Concept unlocked!
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="btn-row">
+          <button class="btn btn-ghost" onclick="goToStep(0)">&larr; Back</button>
+          <button class="btn btn-primary" onclick="goToStep(2)" id="concepts-next" disabled style="opacity:0.5">
+            Choose your project
+            <svg viewBox="0 0 16 16" fill="none"><path d="M3 8h10m-4-4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- STEP 2: Project Picker -->
+    <section class="step" data-step="2">
+      <div class="picker-page">
+        <h2>Pick your first project</h2>
+        <p>Each one is a real, working AI tool. Choose what sounds fun — you can always try another later.</p>
+        <div class="project-grid">
+          <div class="project-option" onclick="selectProject('journal')" data-project="journal">
+            <div class="project-selected-badge">&#10003;</div>
+            <span class="emoji">&#128214;</span>
+            <h3>AI Journal Buddy</h3>
+            <p>Write journal entries and get thoughtful, personalized reflections back from AI.</p>
+            <span class="project-tag tag-easy">Beginner</span>
+          </div>
+          <div class="project-option" onclick="selectProject('summarizer')" data-project="summarizer">
+            <div class="project-selected-badge">&#10003;</div>
+            <span class="emoji">&#9986;&#65039;</span>
+            <h3>Text Summarizer</h3>
+            <p>Paste any article or text and get clean bullet-point summaries instantly.</p>
+            <span class="project-tag tag-easy">Beginner</span>
+          </div>
+          <div class="project-option" onclick="selectProject('travel')" data-project="travel">
+            <div class="project-selected-badge">&#10003;</div>
+            <span class="emoji">&#9992;&#65039;</span>
+            <h3>Travel Planner</h3>
+            <p>Describe your dream trip and get a day-by-day itinerary with local tips.</p>
+            <span class="project-tag tag-medium">Intermediate</span>
+          </div>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-ghost" onclick="goToStep(1)">&larr; Back</button>
+          <button class="btn btn-primary" onclick="startBuild()" id="picker-next" disabled style="opacity:0.5">
+            Start building
+            <svg viewBox="0 0 16 16" fill="none"><path d="M3 8h10m-4-4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- STEP 3: Build Step 1 — Set Up -->
+    <section class="step" data-step="3">
+      <div class="build-page">
+        <div class="build-header">
+          <div class="build-step-indicator">
+            <div class="build-step-pip active"></div>
+            <div class="build-step-pip"></div>
+            <div class="build-step-pip"></div>
+          </div>
+          <span class="build-step-label">Step 1 of 3 — Set up your project</span>
+        </div>
+        <div class="build-content">
+          <div class="build-explanation">
+            <h3>Setting the stage</h3>
+            <p id="build1-desc">Every project starts by importing the tools it needs and setting up the connection to Claude's AI.</p>
+            <div class="build-tip">
+              <div class="build-tip-label">What's happening</div>
+              <p id="build1-tip">The first two lines are like plugging in your appliances before cooking. We're connecting to the Claude API so our code can talk to AI.</p>
+            </div>
+            <button class="btn btn-primary" onclick="goToStep(4)">
+              Next step
+              <svg viewBox="0 0 16 16" fill="none"><path d="M3 8h10m-4-4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+          </div>
+          <div class="build-editor">
+            <div class="editor-wrapper">
+              <div class="editor-toolbar">
+                <div class="editor-dots"><span></span><span></span><span></span></div>
+                <div class="editor-filename" id="build1-filename">journal.py</div>
+              </div>
+              <div class="editor-body" id="build1-code">
+                <!-- filled by JS -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- STEP 4: Build Step 2 — Core Logic -->
+    <section class="step" data-step="4">
+      <div class="build-page">
+        <div class="build-header">
+          <div class="build-step-indicator">
+            <div class="build-step-pip done"></div>
+            <div class="build-step-pip active"></div>
+            <div class="build-step-pip"></div>
+          </div>
+          <span class="build-step-label">Step 2 of 3 — Write the core logic</span>
+        </div>
+        <div class="build-content">
+          <div class="build-explanation">
+            <h3 id="build2-title">The brain of your project</h3>
+            <p id="build2-desc">This is where the magic happens. We write a function that sends your input to Claude and gets a response back.</p>
+            <div class="build-tip">
+              <div class="build-tip-label">Try changing it</div>
+              <p id="build2-tip">See the highlighted line? That's the prompt — the instruction you give to AI. Click it to customize what your AI assistant says.</p>
+            </div>
+            <button class="btn btn-primary" onclick="goToStep(5)">
+              Next step
+              <svg viewBox="0 0 16 16" fill="none"><path d="M3 8h10m-4-4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+          </div>
+          <div class="build-editor">
+            <div class="editor-wrapper">
+              <div class="editor-toolbar">
+                <div class="editor-dots"><span></span><span></span><span></span></div>
+                <div class="editor-filename" id="build2-filename">journal.py</div>
+              </div>
+              <div class="editor-body" id="build2-code"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- STEP 5: Build Step 3 — Run It -->
+    <section class="step" data-step="5">
+      <div class="build-page">
+        <div class="build-header">
+          <div class="build-step-indicator">
+            <div class="build-step-pip done"></div>
+            <div class="build-step-pip done"></div>
+            <div class="build-step-pip active"></div>
+          </div>
+          <span class="build-step-label">Step 3 of 3 — Make it interactive</span>
+        </div>
+        <div class="build-content">
+          <div class="build-explanation">
+            <h3>Bringing it to life</h3>
+            <p id="build3-desc">The final piece — we add user input so anyone can use your tool. Then we run it!</p>
+            <div class="build-tip">
+              <div class="build-tip-label">What this does</div>
+              <p id="build3-tip">This code waits for the user to type something, sends it to your AI function, and prints the result. It's the complete loop!</p>
+            </div>
+            <button class="btn btn-primary" onclick="runPreview()">
+              Run my project
+              <svg viewBox="0 0 16 16" fill="none"><path d="M5 3l8 5-8 5V3z" fill="currentColor"/></svg>
+            </button>
+          </div>
+          <div class="build-editor">
+            <div class="editor-wrapper">
+              <div class="editor-toolbar">
+                <div class="editor-dots"><span></span><span></span><span></span></div>
+                <div class="editor-filename" id="build3-filename">journal.py</div>
+              </div>
+              <div class="editor-body" id="build3-code"></div>
+            </div>
+            <div class="console-panel" id="console" style="margin-top: 16px; display: none;">
+              <div class="console-bar">
+                <div class="dot"></div>
+                <span>Terminal</span>
+              </div>
+              <div class="console-output" id="console-output"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- STEP 6: Launch -->
+    <section class="step" data-step="6">
+      <div class="launch-page">
+        <div class="launch-celebration">&#127881;</div>
+        <h2>You built it!</h2>
+        <p id="launch-desc">Your AI Journal Buddy is complete. It's real code that actually works. You went from curious to builder in minutes.</p>
+        <div class="launch-actions">
+          <button class="btn btn-primary" onclick="showFullCode()">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M5 6l2 2-2 2M9 10h2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            View full code
+          </button>
+          <button class="btn btn-secondary" onclick="copyCode()">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="5" y="5" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.5"/><path d="M3 11V3h8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            Copy to clipboard
+          </button>
+          <button class="btn btn-ghost" onclick="goToStep(2)">Build another project &rarr;</button>
+        </div>
+        <div class="launch-stats">
+          <div class="launch-stat">
+            <div class="num">3</div>
+            <div class="label">Concepts learned</div>
+          </div>
+          <div class="launch-stat">
+            <div class="num" id="stat-lines">18</div>
+            <div class="label">Lines of code</div>
+          </div>
+          <div class="launch-stat">
+            <div class="num">1</div>
+            <div class="label">Working project</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- Tooltip Overlay -->
+  <div class="tooltip-overlay" id="tooltip-overlay" onclick="if(event.target===this)closeTooltip()">
+    <div class="tooltip-card">
+      <h4 id="tooltip-title">Edit this prompt</h4>
+      <p id="tooltip-desc">Change the instruction AI receives. Try making it more specific or changing the tone.</p>
+      <input type="text" id="tooltip-input" value="" placeholder="Type your custom prompt...">
+      <div class="tooltip-actions">
+        <button class="btn btn-ghost" onclick="closeTooltip()">Cancel</button>
+        <button class="btn btn-primary" onclick="applyTooltip()">Apply</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ---- STATE ----
+    let currentStep = 0;
+    let selectedProject = null;
+    let unlockedConcepts = new Set();
+    let customPrompt = null;
+
+    const stepLabels = ['Welcome', 'Learn', 'Choose', 'Build 1/3', 'Build 2/3', 'Build 3/3', 'Launch'];
+
+    // ---- PROJECT DATA ----
+    const projects = {
+      journal: {
+        name: 'AI Journal Buddy',
+        filename: 'journal.py',
+        lines: 18,
+        build1: {
+          desc: 'Every project starts by importing the tools it needs and setting up the connection to Claude\'s AI.',
+          tip: 'The first two lines are like plugging in your appliances before cooking. We\'re connecting to the Claude API so our code can talk to AI.',
+          code: [
+            { n: 1, c: '<span class="comment"># AI Journal Buddy — your personal reflection partner</span>' },
+            { n: 2, c: '' },
+            { n: 3, c: '<span class="keyword">import</span> anthropic' },
+            { n: 4, c: '' },
+            { n: 5, c: '<span class="comment"># Connect to Claude</span>' },
+            { n: 6, c: '<span class="var">client</span> = anthropic.<span class="fn">Anthropic</span>()' },
+          ]
+        },
+        build2: {
+          title: 'The brain of your journal',
+          desc: 'This function takes your journal entry, sends it to Claude with a thoughtful prompt, and returns a warm reflection.',
+          tip: 'See the highlighted line? That\'s the prompt — the personality of your AI buddy. Click it to customize what kind of reflections you get.',
+          defaultPrompt: 'You are a warm, thoughtful journal companion. Read this entry and offer a gentle reflection — notice patterns, ask one follow-up question, and end with encouragement.',
+          code: function(prompt) {
+            const p = prompt || this.defaultPrompt;
+            return [
+              { n: 8, c: '<span class="keyword">def</span> <span class="fn">reflect</span>(entry):' },
+              { n: 9, c: '    <span class="comment"># Send your entry to Claude with a prompt</span>' },
+              { n: 10, c: '    response = client.messages.<span class="fn">create</span>(' },
+              { n: 11, c: '        model=<span class="string">"claude-sonnet-4-20250514"</span>,' },
+              { n: 12, c: '        max_tokens=<span class="keyword">1024</span>,' },
+              { n: 13, c: '        messages=[{' },
+              { n: 14, c: '            <span class="string">"role"</span>: <span class="string">"user"</span>,' },
+              { n: 15, c: '            <span class="string">"content"</span>: entry' },
+              { n: 16, c: '        }],' },
+              { n: 17, c: '        system=<span class="string">"' + escapeHtml(p) + '"</span>', editable: true, editPrompt: p },
+              { n: 18, c: '    )' },
+              { n: 19, c: '    <span class="keyword">return</span> response.content[<span class="keyword">0</span>].text' },
+            ];
+          }
+        },
+        build3: {
+          desc: 'The final piece — we add a loop so you can journal as many entries as you want, getting reflections after each one.',
+          tip: 'This loop keeps running until you type "quit". Each entry goes through your reflect() function and prints the AI\'s response.',
+          code: [
+            { n: 21, c: '<span class="comment"># Let the user journal</span>' },
+            { n: 22, c: '<span class="fn">print</span>(<span class="string">"📓 Journal Buddy is ready. Type your entry (or \'quit\' to exit):"</span>)' },
+            { n: 23, c: '' },
+            { n: 24, c: '<span class="keyword">while</span> <span class="keyword">True</span>:' },
+            { n: 25, c: '    entry = <span class="fn">input</span>(<span class="string">"\\n✏️  "</span>)' },
+            { n: 26, c: '    <span class="keyword">if</span> entry.lower() == <span class="string">"quit"</span>:' },
+            { n: 27, c: '        <span class="fn">print</span>(<span class="string">"Thanks for journaling today! 💛"</span>)' },
+            { n: 28, c: '        <span class="keyword">break</span>' },
+            { n: 29, c: '    reflection = <span class="fn">reflect</span>(entry)' },
+            { n: 30, c: '    <span class="fn">print</span>(<span class="string">f"\\n🪞 {reflection}\\n"</span>)' },
+          ],
+          consoleDemo: [
+            { delay: 0, text: '<span class="prompt-char">$</span> python journal.py' },
+            { delay: 600, text: '<span class="output">📓 Journal Buddy is ready. Type your entry (or \'quit\' to exit):</span>' },
+            { delay: 1200, text: '' },
+            { delay: 1500, text: '<span class="output">✏️  Today was stressful. I had three meetings back to back and didn\'t get any real work done.</span>' },
+            { delay: 2200, text: '' },
+            { delay: 2800, text: '<span class="output">🪞 It sounds like today felt like a treadmill — lots of motion but not much progress on what matters to you. That tension between "being busy" and "doing meaningful work" is really common, and the fact that you notice it shows real self-awareness.</span>' },
+            { delay: 3400, text: '' },
+            { delay: 3800, text: '<span class="output">What would it look like to protect just one hour tomorrow for your most important task? 💛</span>' },
+          ]
+        },
+        fullCode: function(prompt) {
+          const p = prompt || this.build2.defaultPrompt;
+          return `# AI Journal Buddy — your personal reflection partner
+
+import anthropic
+
+# Connect to Claude
+client = anthropic.Anthropic()
+
+
+def reflect(entry):
+    # Send your entry to Claude with a prompt
+    response = client.messages.create(
+        model="claude-sonnet-4-20250514",
+        max_tokens=1024,
+        messages=[{
+            "role": "user",
+            "content": entry
+        }],
+        system="${p}"
+    )
+    return response.content[0].text
+
+
+# Let the user journal
+print("📓 Journal Buddy is ready. Type your entry (or 'quit' to exit):")
+
+while True:
+    entry = input("\\n✏️  ")
+    if entry.lower() == "quit":
+        print("Thanks for journaling today! 💛")
+        break
+    reflection = reflect(entry)
+    print(f"\\n🪞 {reflection}\\n")`;
+        }
+      },
+      summarizer: {
+        name: 'Text Summarizer',
+        filename: 'summarizer.py',
+        lines: 20,
+        build1: {
+          desc: 'We start by connecting to the Claude API — the bridge between your code and AI.',
+          tip: 'Just like before: import the tools, create the connection. Every AI project starts this same way.',
+          code: [
+            { n: 1, c: '<span class="comment"># Text Summarizer — paste anything, get bullet points</span>' },
+            { n: 2, c: '' },
+            { n: 3, c: '<span class="keyword">import</span> anthropic' },
+            { n: 4, c: '' },
+            { n: 5, c: '<span class="comment"># Connect to Claude</span>' },
+            { n: 6, c: '<span class="var">client</span> = anthropic.<span class="fn">Anthropic</span>()' },
+          ]
+        },
+        build2: {
+          title: 'The summarization engine',
+          desc: 'This function takes any text and asks Claude to distill it into clean, scannable bullet points.',
+          tip: 'The highlighted prompt controls the output format. Want numbered points instead? A one-sentence summary? Click to change it.',
+          defaultPrompt: 'Summarize the following text into 3-5 concise bullet points. Focus on key facts and takeaways. Be clear and specific.',
+          code: function(prompt) {
+            const p = prompt || this.defaultPrompt;
+            return [
+              { n: 8, c: '<span class="keyword">def</span> <span class="fn">summarize</span>(text):' },
+              { n: 9, c: '    <span class="comment"># Ask Claude to summarize</span>' },
+              { n: 10, c: '    response = client.messages.<span class="fn">create</span>(' },
+              { n: 11, c: '        model=<span class="string">"claude-sonnet-4-20250514"</span>,' },
+              { n: 12, c: '        max_tokens=<span class="keyword">1024</span>,' },
+              { n: 13, c: '        messages=[{' },
+              { n: 14, c: '            <span class="string">"role"</span>: <span class="string">"user"</span>,' },
+              { n: 15, c: '            <span class="string">"content"</span>: text' },
+              { n: 16, c: '        }],' },
+              { n: 17, c: '        system=<span class="string">"' + escapeHtml(p) + '"</span>', editable: true, editPrompt: p },
+              { n: 18, c: '    )' },
+              { n: 19, c: '    <span class="keyword">return</span> response.content[<span class="keyword">0</span>].text' },
+            ];
+          }
+        },
+        build3: {
+          desc: 'Now we let the user paste text and get summaries back — a complete, usable tool.',
+          tip: 'The loop keeps accepting text until you type "quit". Every paste gets transformed into clean bullet points.',
+          code: [
+            { n: 21, c: '<span class="comment"># Let the user summarize text</span>' },
+            { n: 22, c: '<span class="fn">print</span>(<span class="string">"✂️ Text Summarizer ready. Paste text (or \'quit\' to exit):"</span>)' },
+            { n: 23, c: '' },
+            { n: 24, c: '<span class="keyword">while</span> <span class="keyword">True</span>:' },
+            { n: 25, c: '    text = <span class="fn">input</span>(<span class="string">"\\n📝 Paste text: "</span>)' },
+            { n: 26, c: '    <span class="keyword">if</span> text.lower() == <span class="string">"quit"</span>:' },
+            { n: 27, c: '        <span class="fn">print</span>(<span class="string">"Happy reading! 📚"</span>)' },
+            { n: 28, c: '        <span class="keyword">break</span>' },
+            { n: 29, c: '    summary = <span class="fn">summarize</span>(text)' },
+            { n: 30, c: '    <span class="fn">print</span>(<span class="string">f"\\n📋 Summary:\\n{summary}\\n"</span>)' },
+          ],
+          consoleDemo: [
+            { delay: 0, text: '<span class="prompt-char">$</span> python summarizer.py' },
+            { delay: 600, text: '<span class="output">✂️ Text Summarizer ready. Paste text (or \'quit\' to exit):</span>' },
+            { delay: 1200, text: '' },
+            { delay: 1500, text: '<span class="output">📝 Paste text: The James Webb Space Telescope has discovered evidence of carbon dioxide in the atmosphere of a distant exoplanet...</span>' },
+            { delay: 2200, text: '' },
+            { delay: 2800, text: '<span class="output">📋 Summary:</span>' },
+            { delay: 3200, text: '<span class="output">• JWST detected CO₂ on exoplanet WASP-39b, a first for any space telescope</span>' },
+            { delay: 3500, text: '<span class="output">• The finding confirms JWST can analyze distant planet atmospheres in detail</span>' },
+            { delay: 3800, text: '<span class="output">• This technique will help search for signs of life on other worlds</span>' },
+          ]
+        },
+        fullCode: function(prompt) {
+          const p = prompt || this.build2.defaultPrompt;
+          return `# Text Summarizer — paste anything, get bullet points
+
+import anthropic
+
+# Connect to Claude
+client = anthropic.Anthropic()
+
+
+def summarize(text):
+    # Ask Claude to summarize
+    response = client.messages.create(
+        model="claude-sonnet-4-20250514",
+        max_tokens=1024,
+        messages=[{
+            "role": "user",
+            "content": text
+        }],
+        system="${p}"
+    )
+    return response.content[0].text
+
+
+# Let the user summarize text
+print("✂️ Text Summarizer ready. Paste text (or 'quit' to exit):")
+
+while True:
+    text = input("\\n📝 Paste text: ")
+    if text.lower() == "quit":
+        print("Happy reading! 📚")
+        break
+    summary = summarize(text)
+    print(f"\\n📋 Summary:\\n{summary}\\n")`;
+        }
+      },
+      travel: {
+        name: 'Travel Planner',
+        filename: 'travel_planner.py',
+        lines: 24,
+        build1: {
+          desc: 'Same start as before — connect to Claude. This time we\'ll also set up a system prompt that gives Claude a travel-expert personality.',
+          tip: 'We\'re giving Claude a "role" right from the start. Think of it like briefing a travel agent before they plan your trip.',
+          code: [
+            { n: 1, c: '<span class="comment"># Travel Planner — describe your dream trip, get an itinerary</span>' },
+            { n: 2, c: '' },
+            { n: 3, c: '<span class="keyword">import</span> anthropic' },
+            { n: 4, c: '' },
+            { n: 5, c: '<span class="comment"># Connect to Claude</span>' },
+            { n: 6, c: '<span class="var">client</span> = anthropic.<span class="fn">Anthropic</span>()' },
+          ]
+        },
+        build2: {
+          title: 'Your personal travel agent',
+          desc: 'This function takes a trip description and returns a detailed day-by-day itinerary with local recommendations.',
+          tip: 'The highlighted prompt shapes the entire trip plan. Want budget tips? Food-focused? Adventure-heavy? Click to customize the travel style.',
+          defaultPrompt: 'You are an experienced travel planner. Create a detailed day-by-day itinerary based on the user\'s description. Include specific restaurant and activity recommendations, local tips, and estimated costs. Keep it practical and exciting.',
+          code: function(prompt) {
+            const p = prompt || this.defaultPrompt;
+            return [
+              { n: 8, c: '<span class="keyword">def</span> <span class="fn">plan_trip</span>(description):' },
+              { n: 9, c: '    <span class="comment"># Ask Claude to plan the trip</span>' },
+              { n: 10, c: '    response = client.messages.<span class="fn">create</span>(' },
+              { n: 11, c: '        model=<span class="string">"claude-sonnet-4-20250514"</span>,' },
+              { n: 12, c: '        max_tokens=<span class="keyword">2048</span>,' },
+              { n: 13, c: '        messages=[{' },
+              { n: 14, c: '            <span class="string">"role"</span>: <span class="string">"user"</span>,' },
+              { n: 15, c: '            <span class="string">"content"</span>: description' },
+              { n: 16, c: '        }],' },
+              { n: 17, c: '        system=<span class="string">"' + escapeHtml(p) + '"</span>', editable: true, editPrompt: p },
+              { n: 18, c: '    )' },
+              { n: 19, c: '    <span class="keyword">return</span> response.content[<span class="keyword">0</span>].text' },
+            ];
+          }
+        },
+        build3: {
+          desc: 'Now let\'s make it interactive — users describe their trip and get a full plan back.',
+          tip: 'You describe the destination, dates, and vibe — the AI handles the rest. A complete travel planning tool in 24 lines.',
+          code: [
+            { n: 21, c: '<span class="comment"># Let the user plan trips</span>' },
+            { n: 22, c: '<span class="fn">print</span>(<span class="string">"✈️ Travel Planner ready! Describe your dream trip:"</span>)' },
+            { n: 23, c: '<span class="fn">print</span>(<span class="string">"(Include destination, dates, budget, and what you enjoy)\\n"</span>)' },
+            { n: 24, c: '' },
+            { n: 25, c: '<span class="keyword">while</span> <span class="keyword">True</span>:' },
+            { n: 26, c: '    trip = <span class="fn">input</span>(<span class="string">"🌍 Your trip: "</span>)' },
+            { n: 27, c: '    <span class="keyword">if</span> trip.lower() == <span class="string">"quit"</span>:' },
+            { n: 28, c: '        <span class="fn">print</span>(<span class="string">"Bon voyage! 🧳"</span>)' },
+            { n: 29, c: '        <span class="keyword">break</span>' },
+            { n: 30, c: '    itinerary = <span class="fn">plan_trip</span>(trip)' },
+            { n: 31, c: '    <span class="fn">print</span>(<span class="string">f"\\n📅 Your Itinerary:\\n{itinerary}\\n"</span>)' },
+          ],
+          consoleDemo: [
+            { delay: 0, text: '<span class="prompt-char">$</span> python travel_planner.py' },
+            { delay: 600, text: '<span class="output">✈️ Travel Planner ready! Describe your dream trip:</span>' },
+            { delay: 800, text: '<span class="output">(Include destination, dates, budget, and what you enjoy)</span>' },
+            { delay: 1400, text: '' },
+            { delay: 1800, text: '<span class="output">🌍 Your trip: 4 days in Tokyo, ~$150/day budget, love street food and hidden temples</span>' },
+            { delay: 2600, text: '' },
+            { delay: 3200, text: '<span class="output">📅 Your Itinerary:</span>' },
+            { delay: 3500, text: '<span class="output">Day 1 — Asakusa & East Tokyo</span>' },
+            { delay: 3700, text: '<span class="output">• Morning: Senso-ji Temple (free) — arrive by 7am to beat crowds</span>' },
+            { delay: 3900, text: '<span class="output">• Lunch: Hoppy Street for yakitori (~¥800)</span>' },
+            { delay: 4100, text: '<span class="output">• Afternoon: Yanaka district — old Tokyo charm, hidden temples...</span>' },
+          ]
+        },
+        fullCode: function(prompt) {
+          const p = prompt || this.build2.defaultPrompt;
+          return `# Travel Planner — describe your dream trip, get an itinerary
+
+import anthropic
+
+# Connect to Claude
+client = anthropic.Anthropic()
+
+
+def plan_trip(description):
+    # Ask Claude to plan the trip
+    response = client.messages.create(
+        model="claude-sonnet-4-20250514",
+        max_tokens=2048,
+        messages=[{
+            "role": "user",
+            "content": description
+        }],
+        system="${p}"
+    )
+    return response.content[0].text
+
+
+# Let the user plan trips
+print("✈️ Travel Planner ready! Describe your dream trip:")
+print("(Include destination, dates, budget, and what you enjoy)\\n")
+
+while True:
+    trip = input("🌍 Your trip: ")
+    if trip.lower() == "quit":
+        print("Bon voyage! 🧳")
+        break
+    itinerary = plan_trip(trip)
+    print(f"\\n📅 Your Itinerary:\\n{itinerary}\\n")`;
+        }
+      }
+    };
+
+    // ---- NAVIGATION ----
+    function goToStep(n) {
+      document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+      document.querySelector(`.step[data-step="${n}"]`).classList.add('active');
+      currentStep = n;
+
+      // Update dots
+      document.querySelectorAll('.topbar-dot').forEach((dot, i) => {
+        dot.classList.remove('active', 'done');
+        if (i === n) dot.classList.add('active');
+        else if (i < n) dot.classList.add('done');
+      });
+      document.querySelector('.topbar-step-label').textContent = stepLabels[n] || '';
+
+      // Populate build steps if on build pages
+      if (n >= 3 && n <= 5 && selectedProject) {
+        populateBuildStep(n);
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // ---- CONCEPTS ----
+    function toggleConcept(card) {
+      const wasExpanded = card.classList.contains('expanded');
+      // Close all first
+      document.querySelectorAll('.concept-card').forEach(c => c.classList.remove('expanded'));
+      if (!wasExpanded) {
+        card.classList.add('expanded');
+        unlockedConcepts.add(card.dataset.concept);
+      }
+      // Enable next button when all 3 unlocked
+      if (unlockedConcepts.size >= 3) {
+        const btn = document.getElementById('concepts-next');
+        btn.disabled = false;
+        btn.style.opacity = '1';
+      }
+    }
+
+    // ---- PROJECT SELECTION ----
+    function selectProject(id) {
+      selectedProject = id;
+      customPrompt = null;
+      document.querySelectorAll('.project-option').forEach(o => o.classList.remove('selected'));
+      document.querySelector(`.project-option[data-project="${id}"]`).classList.add('selected');
+      const btn = document.getElementById('picker-next');
+      btn.disabled = false;
+      btn.style.opacity = '1';
+    }
+
+    function startBuild() {
+      if (!selectedProject) return;
+      goToStep(3);
+    }
+
+    // ---- BUILD ----
+    function renderLines(lines) {
+      return lines.map(l => {
+        const editableClass = l.editable ? ' editable-line' : '';
+        const editClick = l.editable ? ` onclick="openEditPrompt('${escapeAttr(l.editPrompt)}')"` : '';
+        const badge = l.editable ? '<span class="editable-badge">click to edit</span>' : '';
+        return `<div class="line${editableClass}"${editClick}><span class="line-num">${l.n}</span><span class="line-content">${l.c}</span>${badge}</div>`;
+      }).join('');
+    }
+
+    function populateBuildStep(step) {
+      const proj = projects[selectedProject];
+      if (step === 3) {
+        document.getElementById('build1-desc').textContent = proj.build1.desc;
+        document.getElementById('build1-tip').textContent = proj.build1.tip;
+        document.getElementById('build1-filename').textContent = proj.filename;
+        document.getElementById('build1-code').innerHTML = renderLines(proj.build1.code);
+      } else if (step === 4) {
+        document.getElementById('build2-title').textContent = proj.build2.title;
+        document.getElementById('build2-desc').textContent = proj.build2.desc;
+        document.getElementById('build2-tip').textContent = proj.build2.tip;
+        document.getElementById('build2-filename').textContent = proj.filename;
+        document.getElementById('build2-code').innerHTML = renderLines(proj.build2.code(customPrompt));
+      } else if (step === 5) {
+        document.getElementById('build3-desc').textContent = proj.build3.desc;
+        document.getElementById('build3-tip').textContent = proj.build3.tip;
+        document.getElementById('build3-filename').textContent = proj.filename;
+        document.getElementById('build3-code').innerHTML = renderLines(proj.build3.code);
+        document.getElementById('console').style.display = 'none';
+      }
+    }
+
+    // ---- EDIT PROMPT ----
+    function openEditPrompt(currentPrompt) {
+      document.getElementById('tooltip-input').value = currentPrompt;
+      document.getElementById('tooltip-overlay').classList.add('visible');
+      setTimeout(() => document.getElementById('tooltip-input').focus(), 100);
+    }
+
+    function closeTooltip() {
+      document.getElementById('tooltip-overlay').classList.remove('visible');
+    }
+
+    function applyTooltip() {
+      const val = document.getElementById('tooltip-input').value.trim();
+      if (val) {
+        customPrompt = val;
+        populateBuildStep(4);
+      }
+      closeTooltip();
+    }
+
+    // ---- CONSOLE DEMO ----
+    function runPreview() {
+      const proj = projects[selectedProject];
+      const console = document.getElementById('console');
+      const output = document.getElementById('console-output');
+      console.style.display = 'block';
+      output.innerHTML = '';
+
+      let i = 0;
+      function typeNext() {
+        if (i >= proj.build3.consoleDemo.length) {
+          setTimeout(() => goToStep(6), 1500);
+          return;
+        }
+        const item = proj.build3.consoleDemo[i];
+        setTimeout(() => {
+          output.innerHTML += item.text + '<br>';
+          output.scrollTop = output.scrollHeight;
+          i++;
+          typeNext();
+        }, i === 0 ? 300 : item.delay - (proj.build3.consoleDemo[i-1]?.delay || 0));
+      }
+      typeNext();
+
+      // Update launch page
+      document.getElementById('launch-desc').textContent =
+        `Your ${proj.name} is complete. It's real code that actually works. You went from curious to builder in minutes.`;
+      document.getElementById('stat-lines').textContent = proj.lines;
+    }
+
+    // ---- LAUNCH ----
+    function showFullCode() {
+      const proj = projects[selectedProject];
+      const code = proj.fullCode(customPrompt);
+
+      // Create a simple modal with the full code
+      const overlay = document.createElement('div');
+      overlay.className = 'tooltip-overlay visible';
+      overlay.style.cssText = 'display:flex; align-items:center; justify-content:center;';
+      overlay.onclick = function(e) { if(e.target===this) this.remove(); };
+
+      overlay.innerHTML = `
+        <div style="background:#1E1A14; border-radius:16px; max-width:640px; width:92%; max-height:80vh; overflow:auto; box-shadow:0 16px 48px rgba(0,0,0,0.3);">
+          <div style="padding:12px 20px; background:#161210; border-bottom:1px solid #2A251E; display:flex; justify-content:space-between; align-items:center; position:sticky;top:0;">
+            <span style="font-family:var(--mono);font-size:12px;color:#8A7E6F;">${proj.filename}</span>
+            <button onclick="this.closest('.tooltip-overlay').remove()" style="background:none;border:none;color:#8A7E6F;cursor:pointer;font-size:18px;padding:4px 8px;">&times;</button>
+          </div>
+          <pre style="padding:20px; font-family:var(--mono); font-size:13px; color:#E8DFD3; line-height:1.8; margin:0; white-space:pre-wrap;">${escapeHtml(code)}</pre>
+        </div>
+      `;
+      document.body.appendChild(overlay);
+    }
+
+    function copyCode() {
+      const proj = projects[selectedProject];
+      const code = proj.fullCode(customPrompt);
+      navigator.clipboard.writeText(code).then(() => {
+        const btn = event.target.closest('.btn');
+        const origText = btn.innerHTML;
+        btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 8l3 3 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg> Copied!';
+        setTimeout(() => { btn.innerHTML = origText; }, 2000);
+      });
+    }
+
+    // ---- UTILS ----
+    function escapeHtml(str) {
+      return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+    function escapeAttr(str) {
+      return str.replace(/'/g, "\\'").replace(/"/g, '\\"');
+    }
+
+    // ---- KEYBOARD ----
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeTooltip();
+      if (e.key === 'Enter' && document.getElementById('tooltip-overlay').classList.contains('visible')) {
+        applyTooltip();
+      }
+    });
+  </script>
+</body>
+</html>
