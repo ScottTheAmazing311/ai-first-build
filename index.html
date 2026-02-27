@@ -869,6 +869,77 @@
 
     /* Disabled next button */
     .btn[disabled] { opacity: 0.35; cursor: not-allowed; pointer-events: none; }
+
+    /* ---- INSPIRATION TICKER ---- */
+    .inspiration-section { overflow: hidden; padding: 0; margin: 28px 0 24px; }
+    .ticker-wrapper { overflow: hidden; white-space: nowrap; }
+    .ticker-track { display: inline-block; white-space: nowrap; animation: ticker 30s linear infinite; }
+    .ticker-track:hover { animation-play-state: paused; }
+    @keyframes ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+    .ticker-item { display: inline-block; color: var(--text-secondary); font-size: 13px; padding: 0 4px; }
+    .ticker-sep { display: inline-block; color: var(--accent); opacity: .6; margin: 0 2px; font-size: 13px; }
+
+    /* ---- LEARN PILLS ---- */
+    .learn-pills { display: flex; gap: 12px; flex-wrap: wrap; margin: 28px 0 32px; }
+    .learn-pill { display: flex; align-items: flex-start; gap: 10px; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 12px 14px; flex: 1; min-width: 160px; }
+    .learn-pill-icon { font-size: 20px; line-height: 1; flex-shrink: 0; }
+    .learn-pill-label { font-size: 12px; font-weight: 700; color: var(--text-primary); margin-bottom: 2px; }
+    .learn-pill-desc { font-size: 12px; color: var(--text-secondary); line-height: 1.4; }
+
+    /* ---- PROJECT TYPE BADGE ---- */
+    .project-type-badge { display: inline-block; font-size: 10px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; padding: 3px 8px; border-radius: 100px; margin-bottom: 8px; }
+    .badge-chat { background: #DBEAFE; color: #1D4ED8; }
+    .badge-website { background: #CCFBF1; color: #0F766E; }
+    .badge-tool { background: #EDE9FE; color: #6D28D9; }
+    .badge-freeform { background: #FEF3C7; color: #B45309; }
+
+    /* ---- LEARN CARDS (teaching moments) ---- */
+    .learn-card { background: #EEF4FF; border: 1px solid #C7D9F8; border-radius: 10px; padding: 12px 14px; margin-top: 16px; }
+    .learn-card-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--info); margin-bottom: 6px; }
+    .learn-card p { font-size: 13px; line-height: 1.6; color: #374151; margin: 0; }
+    .learn-card strong { color: var(--info); }
+
+    /* ---- GLOSSARY TOOLTIPS ---- */
+    .gl { border-bottom: 1.5px dashed var(--info); cursor: help; position: relative; display: inline; }
+    .gl:hover::after { content: attr(data-def); position: absolute; bottom: calc(100% + 6px); left: 50%; transform: translateX(-50%); background: #1e293b; color: #fff; font-size: 11.5px; padding: 7px 10px; border-radius: 6px; width: 220px; white-space: normal; z-index: 100; pointer-events: none; }
+
+    /* ---- WEBSITE PREVIEW APP ---- */
+    .website-preview-app { background: #f8fafc; border-radius: 0; overflow: hidden; }
+    .wp-chrome { background: #e2e8f0; padding: 8px 12px; display: flex; align-items: center; gap: 10px; }
+    .wp-dots { display: flex; gap: 5px; }
+    .wp-dots span { width: 10px; height: 10px; border-radius: 50%; background: #cbd5e1; display: block; }
+    .wp-dots span:nth-child(1) { background: #fc8181; }
+    .wp-dots span:nth-child(2) { background: #f6ad55; }
+    .wp-dots span:nth-child(3) { background: #68d391; }
+    .wp-url { font-size: 11px; color: #64748b; font-family: var(--mono); background: #fff; border-radius: 4px; padding: 3px 8px; flex: 1; text-align: center; }
+    .wp-body { padding: 16px; }
+    .wp-output { min-height: 80px; margin-bottom: 14px; }
+    .wp-output-empty { font-size: 13px; color: var(--text-secondary); font-style: italic; }
+    .wp-form { display: flex; gap: 8px; }
+    .wp-input { flex: 1; border: 1.5px solid var(--border); border-radius: 8px; padding: 9px 12px; font-size: 13px; font-family: inherit; outline: none; transition: border-color .15s; background: #fff; }
+    .wp-input:focus { border-color: var(--info); }
+    .wp-btn { background: var(--info); color: #fff; border: none; border-radius: 8px; padding: 9px 16px; font-size: 13px; font-weight: 600; cursor: pointer; white-space: nowrap; transition: opacity .15s; }
+    .wp-btn:hover { opacity: .88; }
+    .wp-headline { font-size: 20px; font-weight: 800; color: var(--text-primary); margin-bottom: 6px; line-height: 1.25; }
+    .wp-subhead { font-size: 13px; color: var(--text-secondary); margin-bottom: 12px; line-height: 1.5; }
+    .wp-bullets { list-style: none; padding: 0; margin: 0; }
+    .wp-bullets li { font-size: 13px; color: var(--text-primary); padding: 4px 0 4px 18px; position: relative; line-height: 1.5; }
+    .wp-bullets li::before { content: "✓"; position: absolute; left: 0; color: var(--info); font-weight: 700; }
+    .wp-streaming { font-size: 13px; color: var(--text-primary); line-height: 1.6; white-space: pre-wrap; }
+
+    /* ---- TOOL APP ---- */
+    .tool-app { display: flex; background: var(--surface); border-radius: 0; min-height: 260px; }
+    .tool-pane { flex: 1; display: flex; flex-direction: column; padding: 14px; }
+    .tool-pane-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--text-secondary); margin-bottom: 8px; }
+    .tool-textarea { flex: 1; resize: none; border: 1.5px solid var(--border); border-radius: 8px; padding: 10px 12px; font-size: 13px; font-family: inherit; outline: none; min-height: 140px; transition: border-color .15s; background: #fff; }
+    .tool-textarea:focus { border-color: var(--info); }
+    .tool-controls { display: flex; gap: 8px; margin-top: 8px; align-items: center; }
+    .tool-tone-select { flex: 1; border: 1.5px solid var(--border); border-radius: 8px; padding: 7px 10px; font-size: 13px; font-family: inherit; outline: none; background: var(--bg); cursor: pointer; }
+    .tool-btn { background: var(--info); color: #fff; border: none; border-radius: 8px; padding: 8px 16px; font-size: 13px; font-weight: 600; cursor: pointer; transition: opacity .15s; white-space: nowrap; }
+    .tool-btn:hover { opacity: .88; }
+    .tool-divider { width: 1px; background: var(--border); margin: 14px 0; }
+    .tool-output { flex: 1; overflow-y: auto; font-size: 13px; line-height: 1.6; color: var(--text-primary); white-space: pre-wrap; padding: 4px 2px; }
+    .tool-placeholder { font-size: 13px; color: var(--text-secondary); font-style: italic; margin-top: 16px; }
   </style>
 </head>
 <body>
@@ -902,15 +973,69 @@
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.5"/><path d="M7 4v3l2 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
           Takes about 10 minutes
         </div>
-        <h1>Build your first <em>AI project</em> — no coding experience needed</h1>
-        <p>You already talk to AI every day. Now learn to build with it. We'll go from zero to a working project you can actually use — one small step at a time.</p>
+        <h1>Build something real. <em>With AI.</em></h1>
+        <p>Claude Code writes the code. You write the idea. No experience needed.</p>
+
+        <div class="inspiration-section">
+          <div class="ticker-wrapper">
+            <div class="ticker-track">
+              <span class="ticker-item">AI coaching app</span><span class="ticker-sep">·</span>
+              <span class="ticker-item">recipe generator</span><span class="ticker-sep">·</span>
+              <span class="ticker-item">portfolio website</span><span class="ticker-sep">·</span>
+              <span class="ticker-item">trip planner</span><span class="ticker-sep">·</span>
+              <span class="ticker-item">text rewriter</span><span class="ticker-sep">·</span>
+              <span class="ticker-item">quiz game</span><span class="ticker-sep">·</span>
+              <span class="ticker-item">code reviewer</span><span class="ticker-sep">·</span>
+              <span class="ticker-item">study buddy</span><span class="ticker-sep">·</span>
+              <span class="ticker-item">customer support bot</span><span class="ticker-sep">·</span>
+              <span class="ticker-item">startup landing page</span><span class="ticker-sep">·</span>
+              <span class="ticker-item">daily habit tracker</span><span class="ticker-sep">·</span>
+              <span class="ticker-item">AI coaching app</span><span class="ticker-sep">·</span>
+              <span class="ticker-item">recipe generator</span><span class="ticker-sep">·</span>
+              <span class="ticker-item">portfolio website</span><span class="ticker-sep">·</span>
+              <span class="ticker-item">trip planner</span><span class="ticker-sep">·</span>
+              <span class="ticker-item">text rewriter</span><span class="ticker-sep">·</span>
+              <span class="ticker-item">quiz game</span><span class="ticker-sep">·</span>
+              <span class="ticker-item">code reviewer</span><span class="ticker-sep">·</span>
+              <span class="ticker-item">study buddy</span><span class="ticker-sep">·</span>
+              <span class="ticker-item">customer support bot</span><span class="ticker-sep">·</span>
+              <span class="ticker-item">startup landing page</span><span class="ticker-sep">·</span>
+              <span class="ticker-item">daily habit tracker</span><span class="ticker-sep">·</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="learn-pills">
+          <div class="learn-pill">
+            <div class="learn-pill-icon">⚡</div>
+            <div>
+              <div class="learn-pill-label">Claude Code</div>
+              <div class="learn-pill-desc">AI that writes real code from plain English</div>
+            </div>
+          </div>
+          <div class="learn-pill">
+            <div class="learn-pill-icon">🧠</div>
+            <div>
+              <div class="learn-pill-label">System prompts</div>
+              <div class="learn-pill-desc">How you shape AI's personality &amp; role</div>
+            </div>
+          </div>
+          <div class="learn-pill">
+            <div class="learn-pill-icon">🔌</div>
+            <div>
+              <div class="learn-pill-label">API calls</div>
+              <div class="learn-pill-desc">How your app talks to Claude's brain</div>
+            </div>
+          </div>
+        </div>
+
         <div class="welcome-reassurance">
           <span><span class="check">&#10003;</span> No installs needed</span>
           <span><span class="check">&#10003;</span> Plain-English explanations</span>
           <span><span class="check">&#10003;</span> You'll run it live today</span>
         </div>
         <button class="btn btn-primary" onclick="goToStep(1)">
-          Let's start
+          Let's start →
           <svg viewBox="0 0 16 16" fill="none"><path d="M3 8h10m-4-4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </button>
       </div>
@@ -1023,36 +1148,56 @@
     <!-- STEP 2: Project Picker -->
     <section class="step" data-step="2">
       <div class="picker-page">
-        <h2>Pick your first project</h2>
-        <p>Each one is a real, working AI tool. Choose what sounds fun — you can always try another later.</p>
+        <h2>What do you want to build?</h2>
+        <p>Pick a starting point. These are real, working projects — not toy demos.</p>
         <div class="project-grid">
           <div class="project-option" onclick="selectProject('journal')" data-project="journal">
             <div class="project-selected-badge">&#10003;</div>
-            <span class="emoji">&#128214;</span>
+            <span class="project-type-badge badge-chat">💬 Chat</span>
+            <span class="emoji">📓</span>
             <h3>AI Journal Buddy</h3>
             <p>Write journal entries and get thoughtful, personalized reflections back from AI.</p>
             <span class="project-tag tag-easy">Beginner</span>
           </div>
           <div class="project-option" onclick="selectProject('summarizer')" data-project="summarizer">
             <div class="project-selected-badge">&#10003;</div>
-            <span class="emoji">&#9986;&#65039;</span>
-            <h3>Text Summarizer</h3>
+            <span class="project-type-badge badge-chat">💬 Chat</span>
+            <span class="emoji">📋</span>
+            <h3>AI Summarizer</h3>
             <p>Paste any article or text and get clean bullet-point summaries instantly.</p>
             <span class="project-tag tag-easy">Beginner</span>
           </div>
           <div class="project-option" onclick="selectProject('travel')" data-project="travel">
             <div class="project-selected-badge">&#10003;</div>
-            <span class="emoji">&#9992;&#65039;</span>
-            <h3>Travel Planner</h3>
+            <span class="project-type-badge badge-chat">💬 Chat</span>
+            <span class="emoji">✈️</span>
+            <h3>AI Travel Planner</h3>
             <p>Describe your dream trip and get a day-by-day itinerary with local tips.</p>
+            <span class="project-tag tag-medium">Intermediate</span>
+          </div>
+          <div class="project-option" onclick="selectProject('landing')" data-project="landing">
+            <div class="project-selected-badge">&#10003;</div>
+            <span class="project-type-badge badge-website">🌐 Website</span>
+            <span class="emoji">🖥️</span>
+            <h3>AI Landing Page</h3>
+            <p>Describe your business and get a sharp, AI-written landing page with headline and bullets.</p>
+            <span class="project-tag tag-medium">Intermediate</span>
+          </div>
+          <div class="project-option" onclick="selectProject('rewriter')" data-project="rewriter">
+            <div class="project-selected-badge">&#10003;</div>
+            <span class="project-type-badge badge-tool">🔧 Tool</span>
+            <span class="emoji">✏️</span>
+            <h3>AI Text Rewriter</h3>
+            <p>Paste any text, pick a tone, and watch Claude rewrite it — professional, casual, or funny.</p>
             <span class="project-tag tag-medium">Intermediate</span>
           </div>
           <div class="project-option" onclick="selectProject('freeform')" data-project="freeform">
             <div class="project-selected-badge">&#10003;</div>
-            <span class="emoji">&#128161;</span>
+            <span class="project-type-badge badge-freeform">✨ Freeform</span>
+            <span class="emoji">💡</span>
             <h3>Your Own Idea</h3>
             <p>Already have something in mind? Describe it and see exactly how Claude Code brings it to life.</p>
-            <span class="project-tag tag-medium">Your Idea</span>
+            <span class="project-tag tag-medium">Any level</span>
           </div>
         </div>
         <div class="btn-row">
@@ -1084,6 +1229,7 @@
               <div class="build-tip-label">What's happening</div>
               <p id="build1-tip">The first two lines are like plugging in your appliances before cooking. We're connecting to the Claude API so our code can talk to AI.</p>
             </div>
+            <div id="build1-learn"></div>
             <button id="build1-next" class="btn btn-primary" onclick="goToStep(4)" disabled>
               Next step
               <svg viewBox="0 0 16 16" fill="none"><path d="M3 8h10m-4-4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -1115,6 +1261,7 @@
               <div class="build-tip-label">Try changing it</div>
               <p id="build2-tip">See the highlighted line? That's the prompt — the instruction you give to AI. Click it to customize what your AI assistant says.</p>
             </div>
+            <div id="build2-learn"></div>
             <button id="build2-next" class="btn btn-primary" onclick="goToStep(5)" disabled>
               Next step
               <svg viewBox="0 0 16 16" fill="none"><path d="M3 8h10m-4-4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -1146,6 +1293,7 @@
               <div class="build-tip-label">What's happening</div>
               <p id="build3-tip">When you hit send, your code calls the Claude API with the prompt you chose. The response streams back live — no scripted demo, this is real AI.</p>
             </div>
+            <div id="build3-learn"></div>
             <div class="run-btn-row">
               <button class="btn btn-primary" id="launch-btn" onclick="goToLaunch()">
                 I built it — celebrate!
@@ -1323,6 +1471,7 @@
     // ---- PROJECT DATA ----
     const projects = {
       journal: {
+        type: 'chat',
         name: 'AI Journal Buddy',
         filename: 'journal.py',
         lines: 18,
@@ -1382,6 +1531,7 @@
         }
       },
       summarizer: {
+        type: 'chat',
         name: 'Text Summarizer',
         filename: 'summarizer.py',
         lines: 20,
@@ -1441,6 +1591,7 @@
         }
       },
       travel: {
+        type: 'chat',
         name: 'Travel Planner',
         filename: 'travel_planner.py',
         lines: 24,
@@ -1500,6 +1651,7 @@
         }
       },
       freeform: {
+        type: 'chat',
         name: 'Your AI App',
         filename: 'app.js',
         lines: 20,
@@ -1545,6 +1697,102 @@
         fullCode: function(prompt) {
           const p = prompt || this.build2.defaultPrompt;
           return `// Your AI App\nimport Anthropic from "@anthropic-ai/sdk";\n\nconst client = new Anthropic();\n\nasync function chat(input) {\n  const response = await client.messages.create({\n    model: "claude-sonnet-4-20250514",\n    max_tokens: 1024,\n    system: "${p}",\n    messages: [{ role: "user", content: input }]\n  });\n  return response.content[0].text;\n}\n\n// Example usage\nconst answer = await chat("Hello!");\nconsole.log(answer);`;
+        }
+      },
+      landing: {
+        type: 'website',
+        name: 'AI Landing Page',
+        filename: 'index.html',
+        lines: 22,
+        liveLabel: 'AI Landing Page — describe your business',
+        launchEmoji: '🖥️',
+        build1: {
+          desc: 'Start by creating index.html — the foundation of your landing page. Claude Code sets up the file structure and connects the AI logic.',
+          tip: 'Tell Claude Code exactly what to create. Name the file and what it connects to — specifics get better results.',
+          ccSession: [
+            { type: 'user', text: 'create index.html with a hero section and connect it to the Anthropic SDK' },
+            { type: 'tool', verb: '✎ Creating', file: 'index.html', diffs: [
+              { add: true, code: '<span class="cc-cm">// AI Landing Page Generator</span>' },
+              { add: true, code: '<span class="cc-kw">import</span> Anthropic <span class="cc-kw">from</span> <span class="cc-str">"@anthropic-ai/sdk"</span>;' },
+              { add: true, code: '<span class="cc-kw">const</span> <span class="cc-var">client</span> = <span class="cc-kw">new</span> <span class="cc-fn">Anthropic</span>();' },
+            ]},
+            { type: 'done', text: 'index.html created — Anthropic SDK connected.' }
+          ]
+        },
+        build2: {
+          title: 'The page generator',
+          desc: 'This function takes a business description and asks Claude to write a complete landing page with a headline, subheadline, and key bullet points.',
+          tip: 'Describe the function by name and what it generates. The more specific you are, the better the code Claude writes.',
+          defaultPrompt: 'You are a sharp copywriter who creates landing page copy. Given a business description, respond with exactly this format:\nHEADLINE: [punchy 6-10 word headline]\nSUBHEAD: [one sentence subheadline]\nBULLETS:\n- [benefit 1]\n- [benefit 2]\n- [benefit 3]',
+          ccSession: function(prompt) {
+            const p = prompt || this.defaultPrompt;
+            const pShort = p.length > 48 ? p.substring(0, 48) + '\u2026' : p;
+            return [
+              { type: 'user', text: 'add a generateHero() function that writes landing page copy' },
+              { type: 'tool', verb: '✎ Editing', file: 'index.html', diffs: [
+                { add: true, code: '<span class="cc-kw">async function</span> <span class="cc-fn">generateHero</span>(<span class="cc-var">description</span>) {' },
+                { add: true, code: '  system: <span class="cc-str">"<span class="cc-editable-prompt" onclick="openEditPrompt(\'' + escapeAttr(p) + '\')">' + escapeHtml(pShort) + '</span>"</span>,' },
+                { add: true, code: '}' },
+              ]},
+              { type: 'done', text: 'generateHero() added — click the orange prompt to customize it.' }
+            ];
+          }
+        },
+        build3: {
+          desc: 'Describe your business below and watch Claude write your landing page copy — headline, subheadline, and key benefits — in real time.',
+          tip: 'Try: "I run a dog grooming business in Austin" or "We make project management software for remote teams."'
+        },
+        fullCode: function(prompt) {
+          const p = prompt || this.build2.defaultPrompt;
+          return `// AI Landing Page Generator\nimport Anthropic from "@anthropic-ai/sdk";\n\nconst client = new Anthropic();\n\nasync function generateHero(description) {\n  const response = await client.messages.create({\n    model: "claude-sonnet-4-20250514",\n    max_tokens: 512,\n    system: "${p}",\n    messages: [{ role: "user", content: description }]\n  });\n  return response.content[0].text;\n}\n\n// Example usage\nconst copy = await generateHero("I run a boutique coffee shop in Brooklyn");\nconsole.log(copy);`;
+        }
+      },
+      rewriter: {
+        type: 'tool',
+        name: 'AI Text Rewriter',
+        filename: 'rewriter.js',
+        lines: 20,
+        liveLabel: 'AI Text Rewriter — paste text and pick a tone',
+        launchEmoji: '✏️',
+        build1: {
+          desc: 'Start by creating rewriter.js and connecting to the Anthropic SDK. This tool will take any text and rewrite it in whatever tone you choose.',
+          tip: 'Tell Claude Code exactly what to create. Name the file and what it connects to — specifics get better results.',
+          ccSession: [
+            { type: 'user', text: 'create rewriter.js and connect it to the Anthropic SDK' },
+            { type: 'tool', verb: '✎ Creating', file: 'rewriter.js', diffs: [
+              { add: true, code: '<span class="cc-cm">// AI Text Rewriter</span>' },
+              { add: true, code: '<span class="cc-kw">import</span> Anthropic <span class="cc-kw">from</span> <span class="cc-str">"@anthropic-ai/sdk"</span>;' },
+              { add: true, code: '<span class="cc-kw">const</span> <span class="cc-var">client</span> = <span class="cc-kw">new</span> <span class="cc-fn">Anthropic</span>();' },
+            ]},
+            { type: 'done', text: 'rewriter.js created — Anthropic SDK connected.' }
+          ]
+        },
+        build2: {
+          title: 'The rewriting engine',
+          desc: 'This function takes text and a tone, then asks Claude to rewrite it — keeping the meaning but changing the style completely.',
+          tip: 'Describe the function by name, its inputs (text + tone), and what kind of transformation it should make.',
+          defaultPrompt: 'You are an expert editor. Rewrite the given text in the requested tone while preserving the core meaning. Be natural, not robotic. Match the energy of the requested tone precisely.',
+          ccSession: function(prompt) {
+            const p = prompt || this.defaultPrompt;
+            const pShort = p.length > 48 ? p.substring(0, 48) + '\u2026' : p;
+            return [
+              { type: 'user', text: 'add a rewrite(text, tone) function that rewrites in the given tone' },
+              { type: 'tool', verb: '✎ Editing', file: 'rewriter.js', diffs: [
+                { add: true, code: '<span class="cc-kw">async function</span> <span class="cc-fn">rewrite</span>(<span class="cc-var">text</span>, <span class="cc-var">tone</span>) {' },
+                { add: true, code: '  system: <span class="cc-str">"<span class="cc-editable-prompt" onclick="openEditPrompt(\'' + escapeAttr(p) + '\')">' + escapeHtml(pShort) + '</span>"</span>,' },
+                { add: true, code: '}' },
+              ]},
+              { type: 'done', text: 'rewrite() added — click the orange prompt to customize it.' }
+            ];
+          }
+        },
+        build3: {
+          desc: 'Paste any text on the left, pick a tone, and watch Claude transform it. Same meaning — completely different voice.',
+          tip: 'Try pasting a formal email and selecting "casual" — or paste a casual message and make it "professional".'
+        },
+        fullCode: function(prompt) {
+          const p = prompt || this.build2.defaultPrompt;
+          return `// AI Text Rewriter\nimport Anthropic from "@anthropic-ai/sdk";\n\nconst client = new Anthropic();\n\nasync function rewrite(text, tone) {\n  const response = await client.messages.create({\n    model: "claude-sonnet-4-20250514",\n    max_tokens: 1024,\n    system: "${p}",\n    messages: [{ role: "user", content: "Rewrite in a " + tone + " tone:\\n\\n" + text }]\n  });\n  return response.content[0].text;\n}\n\n// Example usage\nconst result = await rewrite("Please be advised that your request has been received.", "casual");\nconsole.log(result);`;
         }
       }
     };
@@ -1650,9 +1898,24 @@
     function renderCCInput(containerId, step) {
       const container = document.getElementById(containerId);
       if (!container) return;
-      const placeholder = step === 3
-        ? 'e.g. create journal.js and connect to Anthropic SDK'
-        : 'e.g. add a reflect() function that takes a journal entry';
+      const proj = projects[selectedProject] || {};
+      let placeholder;
+      if (step === 3) {
+        const session = proj.build1?.ccSession;
+        const ex = Array.isArray(session) ? session.find(m => m.type === 'user')?.text : null;
+        placeholder = ex ? `e.g. ${ex}` : 'e.g. create a file and connect to Anthropic SDK';
+      } else {
+        // build2.ccSession is a function for all projects; use a generic hint
+        const hints = {
+          journal: 'e.g. add a reflect() function that takes a journal entry',
+          summarizer: 'e.g. add a summarize() function that takes an article',
+          travel: 'e.g. add a planTrip() function that takes a destination',
+          landing: 'e.g. add a generateHero() function that takes a business description',
+          rewriter: 'e.g. add a rewrite() function that takes text and a tone',
+          freeform: 'e.g. add a chat() function that takes user input and returns a response',
+        };
+        placeholder = hints[selectedProject] || 'e.g. add a function that takes input and returns AI response';
+      }
       container.innerHTML = `
         <div class="cc-session-wrapper" style="display:flex;flex-direction:column;height:100%;">
           <div class="cc-toolbar">
@@ -1705,7 +1968,7 @@
         const resp = await fetch('/api/evaluate', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ userPrompt, step, project: selectedProject, projectName: proj ? proj.name : '' }),
+          body: JSON.stringify({ userPrompt, step, project: selectedProject, projectName: proj ? proj.name : '', projectType: proj ? proj.type : 'chat' }),
         });
         const result = await resp.json();
         handleEvalResult(step, userPrompt, result);
@@ -1824,6 +2087,9 @@
       if (step === 3) {
         document.getElementById('build1-desc').textContent = proj.build1.desc;
         document.getElementById('build1-tip').textContent = proj.build1.tip;
+        // Learn card: What is Claude Code?
+        const lc1 = document.getElementById('build1-learn');
+        if (lc1) lc1.innerHTML = withGlossary(`<div class="learn-card"><div class="learn-card-label">💡 What you're learning</div><p><strong>Claude Code</strong> is an AI coding agent that reads plain-English instructions and writes real, working code. You're literally programming in English — no syntax knowledge required. The <strong>SDK</strong> it imports is a pre-built library that makes calling the <strong>API</strong> simple.</p></div>`);
         if (build1Approved && storedSession1) {
           renderCCSession('build1-cc', storedSession1);
           const nb = document.getElementById('build1-next');
@@ -1835,6 +2101,9 @@
         document.getElementById('build2-title').textContent = proj.build2.title;
         document.getElementById('build2-desc').textContent = proj.build2.desc;
         document.getElementById('build2-tip').textContent = proj.build2.tip;
+        // Learn card: What is a system prompt?
+        const lc2 = document.getElementById('build2-learn');
+        if (lc2) lc2.innerHTML = withGlossary(`<div class="learn-card"><div class="learn-card-label">💡 What you're learning</div><p>A <strong>system prompt</strong> is the set of instructions Claude reads before every conversation. It defines Claude's personality, role, and limits. What you just wrote becomes part of your app's code permanently — it's how you shape AI behavior without touching model weights.</p></div>`);
         if (build2Approved && storedSession2) {
           renderCCSession('build2-cc', storedSession2);
           const nb = document.getElementById('build2-next');
@@ -1846,7 +2115,17 @@
         document.getElementById('build3-desc').textContent = proj.build3.desc;
         document.getElementById('build3-tip').textContent = proj.build3.tip;
         document.getElementById('live-app-label').textContent = proj.liveLabel;
-        renderLiveApp('live-app-ui', selectedProject);
+        // Learn card: What is an API call?
+        const lc3 = document.getElementById('build3-learn');
+        if (lc3) lc3.innerHTML = withGlossary(`<div class="learn-card"><div class="learn-card-label">💡 What you're learning</div><p>Every time someone uses your app, it sends a live message to Claude's <strong>API</strong> — a connection to Claude's brain in the cloud. Claude reads your <strong>system prompt</strong> plus the user's message, then streams a response back in real time. Each message uses <strong>tokens</strong> — roughly ¾ of a word each.</p></div>`);
+        // Branch on project type for live preview
+        if (proj.type === 'website') {
+          renderWebsiteApp('live-app-ui');
+        } else if (proj.type === 'tool') {
+          renderToolApp('live-app-ui');
+        } else {
+          renderLiveApp('live-app-ui', selectedProject);
+        }
       }
     }
 
@@ -1868,6 +2147,180 @@
         populateBuildStep(4);
       }
       closeTooltip();
+    }
+
+    // ---- GLOSSARY ----
+    const GLOSSARY = {
+      'SDK': 'Software Development Kit — a pre-built library that makes calling the Claude API simple',
+      'API': 'Application Programming Interface — how your code sends messages to Claude\'s brain in the cloud',
+      'system prompt': 'Instructions Claude reads before every conversation — its personality, role, and limits',
+      'tokens': 'The chunks Claude reads and generates. ~¾ of a word each. Claude has a limit per message',
+      'Claude Code': 'An AI coding agent that reads plain-English descriptions and writes real, working code',
+      'function': 'A named block of code that does one specific job when called'
+    };
+
+    function withGlossary(html) {
+      let result = html;
+      for (const [term, def] of Object.entries(GLOSSARY)) {
+        // Only wrap first occurrence, skip if already inside an HTML tag
+        const escaped = def.replace(/"/g, '&quot;');
+        const regex = new RegExp(`(?<!<[^>]*)(\\b${term}\\b)(?![^<]*>)`, '');
+        result = result.replace(regex, `<span class="gl" data-def="${escaped}">$1</span>`);
+      }
+      return result;
+    }
+
+    // ---- WEBSITE APP RENDERING ----
+    function renderWebsiteApp(containerId) {
+      const container = document.getElementById(containerId);
+      if (!container) return;
+      container.innerHTML = `
+        <div class="website-preview-app">
+          <div class="wp-chrome">
+            <div class="wp-dots"><span></span><span></span><span></span></div>
+            <div class="wp-url">localhost:3000/index.html</div>
+          </div>
+          <div class="wp-body">
+            <div class="wp-output" id="${containerId}-output">
+              <div class="wp-output-empty">Your generated landing page will appear here.</div>
+            </div>
+            <form class="wp-form" onsubmit="runWebsite('${containerId}'); return false;">
+              <input class="wp-input" id="${containerId}-input" placeholder="e.g. I run a dog grooming business in Austin...">
+              <button class="wp-btn" type="submit">Generate page →</button>
+            </form>
+          </div>
+        </div>`;
+    }
+
+    function runWebsite(containerId) {
+      const input = document.getElementById(`${containerId}-input`);
+      const output = document.getElementById(`${containerId}-output`);
+      const text = input ? input.value.trim() : '';
+      if (!text) return;
+
+      output.innerHTML = '<div class="wp-output-empty">Generating<span class="typing-cursor"></span></div>';
+      hasRunLive = true;
+      setLiveStatus(true);
+
+      // For website projects, always use the structured defaultPrompt so output
+      // is in HEADLINE:/SUBHEAD:/BULLETS: format that renderWebsiteOutput can parse.
+      // Merge with any user-defined style from getSystemPrompt() if it differs.
+      const proj = projects[selectedProject];
+      const basePrompt = proj?.build2?.defaultPrompt || getSystemPrompt();
+      const userStyle = getSystemPrompt();
+      const websitePrompt = (userStyle && userStyle !== basePrompt)
+        ? basePrompt + '\n\nStyle: ' + userStyle
+        : basePrompt;
+
+      let accumulated = '';
+      streamFromClaude(
+        text,
+        websitePrompt,
+        (chunk) => {
+          accumulated += chunk;
+          renderWebsiteOutput(output, accumulated, true);
+        },
+        () => {
+          renderWebsiteOutput(output, accumulated, false);
+          setLiveStatus(false);
+        },
+        (err) => {
+          output.innerHTML = `<div class="wp-output-empty" style="color:var(--accent)">⚠️ ${escapeHtml(err)}</div>`;
+          setLiveStatus(false);
+        }
+      );
+    }
+
+    function renderWebsiteOutput(container, text, streaming) {
+      // Parse structured output: HEADLINE:, SUBHEAD:, BULLETS: - bullet list
+      const headlineMatch = text.match(/HEADLINE:\s*(.+)/i);
+      const subheadMatch = text.match(/SUBHEAD:\s*(.+)/i);
+      const bulletsSection = text.match(/BULLETS:\s*([\s\S]*)/i);
+
+      if (!headlineMatch && streaming) {
+        container.innerHTML = `<div class="wp-streaming">${escapeHtml(text)}<span class="typing-cursor"></span></div>`;
+        return;
+      }
+
+      let html = '';
+      if (headlineMatch) {
+        html += `<div class="wp-headline">${escapeHtml(headlineMatch[1].trim())}</div>`;
+      }
+      if (subheadMatch) {
+        html += `<div class="wp-subhead">${escapeHtml(subheadMatch[1].trim())}</div>`;
+      }
+      if (bulletsSection) {
+        const lines = bulletsSection[1].split('\n').map(l => l.replace(/^[-•*]\s*/, '').trim()).filter(l => l);
+        if (lines.length) {
+          html += `<ul class="wp-bullets">` + lines.map(l => `<li>${escapeHtml(l)}</li>`).join('') + `</ul>`;
+        }
+      }
+      if (!html) {
+        html = `<div class="wp-streaming">${escapeHtml(text)}${streaming ? '<span class="typing-cursor"></span>' : ''}</div>`;
+      } else if (streaming) {
+        html += '<span class="typing-cursor"></span>';
+      }
+      container.innerHTML = html;
+    }
+
+    // ---- TOOL APP RENDERING ----
+    function renderToolApp(containerId) {
+      const container = document.getElementById(containerId);
+      if (!container) return;
+      container.innerHTML = `
+        <div class="tool-app">
+          <div class="tool-pane tool-input-pane">
+            <div class="tool-pane-label">Your text</div>
+            <textarea class="tool-textarea" id="${containerId}-input" placeholder="Paste any text here..."></textarea>
+            <div class="tool-controls">
+              <select id="${containerId}-tone" class="tool-tone-select">
+                <option value="professional">Professional</option>
+                <option value="casual">Casual</option>
+                <option value="simple">Simple English</option>
+                <option value="funny">Add some humor</option>
+              </select>
+              <button class="tool-btn" onclick="runTool('${containerId}')">Rewrite →</button>
+            </div>
+          </div>
+          <div class="tool-divider"></div>
+          <div class="tool-pane tool-output-pane">
+            <div class="tool-pane-label">Claude's version</div>
+            <div class="tool-output" id="${containerId}-output">
+              <div class="tool-placeholder">Your rewritten text appears here.</div>
+            </div>
+          </div>
+        </div>`;
+    }
+
+    function runTool(containerId) {
+      const input = document.getElementById(`${containerId}-input`);
+      const toneEl = document.getElementById(`${containerId}-tone`);
+      const output = document.getElementById(`${containerId}-output`);
+      const text = input ? input.value.trim() : '';
+      const tone = toneEl ? toneEl.value : 'professional';
+      if (!text) return;
+
+      output.innerHTML = '<div class="tool-placeholder">Rewriting<span class="typing-cursor"></span></div>';
+      hasRunLive = true;
+      setLiveStatus(true);
+
+      let accumulated = '';
+      streamFromClaude(
+        `Rewrite in a ${tone} tone:\n\n${text}`,
+        getSystemPrompt(),
+        (chunk) => {
+          accumulated += chunk;
+          output.innerHTML = escapeHtml(accumulated) + '<span class="typing-cursor"></span>';
+        },
+        () => {
+          output.innerHTML = escapeHtml(accumulated);
+          setLiveStatus(false);
+        },
+        (err) => {
+          output.innerHTML = `<div class="tool-placeholder" style="color:var(--accent)">⚠️ ${escapeHtml(err)}</div>`;
+          setLiveStatus(false);
+        }
+      );
     }
 
     // ---- LIVE APP RENDERING ----
@@ -2196,9 +2649,15 @@
       document.getElementById('stat-lines').textContent = proj.lines;
       document.getElementById('launch-emoji').textContent = proj.launchEmoji;
 
-      // Render live app on launch page too
+      // Render live app on launch page too (type-aware)
       document.getElementById('launch-live-label').textContent = proj.liveLabel;
-      renderLiveApp('launch-live-ui', selectedProject);
+      if (proj.type === 'website') {
+        renderWebsiteApp('launch-live-ui');
+      } else if (proj.type === 'tool') {
+        renderToolApp('launch-live-ui');
+      } else {
+        renderLiveApp('launch-live-ui', selectedProject);
+      }
 
       goToStep(6);
     }
